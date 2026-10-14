@@ -1,6 +1,6 @@
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LAB, SECTIONS, profile } from "./data/profile.js";
-import { Header } from "./components/Header.jsx";
+import { Sidebar } from "./components/Sidebar.jsx";
 import { KeyboardIcon } from "./components/Icons.jsx";
 import { ShortcutHelp } from "./components/ShortcutHelp.jsx";
 import { ToastProvider } from "./components/Toast.jsx";
@@ -35,6 +35,26 @@ function flash(elementId, { block = "center", ring = true } = {}) {
   void el.offsetWidth; // restart the animation
   el.classList.add("is-highlighted");
   setTimeout(() => el.classList.remove("is-highlighted"), 2200);
+}
+
+function Footer({ page, onHelp }) {
+  return (
+    <footer className="site-footer">
+      <div className="container">
+        <span>© {profile.basics.name} · Last updated {formatMonth(profile.lastUpdated)}</span>
+        <span className="footer-actions">
+          <button type="button" className="btn btn-ghost" onClick={onHelp}>
+            <KeyboardIcon /> Keyboard shortcuts <kbd aria-hidden="true">?</kbd>
+          </button>
+          {page === "lab" ? (
+            <a className="btn btn-ghost" href="#overview">← Back to profile</a>
+          ) : (
+            <a className="btn btn-ghost" href={`#${LAB.id}`}>Usability Lab <kbd aria-hidden="true">{LAB.key}</kbd></a>
+          )}
+        </span>
+      </div>
+    </footer>
+  );
 }
 
 export default function App() {
@@ -140,30 +160,21 @@ export default function App() {
             Skip to content
           </a>
           {page === "lab" ? (
-            <Suspense fallback={<p className="container lab-main">Loading the Usability Lab…</p>}>
-              <LabPage />
-            </Suspense>
-          ) : (
             <>
-              <Header ref={searchRef} index={index} onSelect={onSelect} active={active} onNav={goTo} />
-              <ProfilePage active={active} onNav={goTo} onSearch={focusSearch} />
+              <Suspense fallback={<p className="container lab-main">Loading the Usability Lab…</p>}>
+                <LabPage />
+              </Suspense>
+              <Footer page={page} onHelp={() => setHelpOpen(true)} />
             </>
-          )}
-          <footer className="site-footer">
-            <div className="container">
-              <span>© {profile.basics.name} · Last updated {formatMonth(profile.lastUpdated)}</span>
-              <span className="footer-actions">
-                <button type="button" className="btn btn-ghost" onClick={() => setHelpOpen(true)}>
-                  <KeyboardIcon /> Keyboard shortcuts <kbd aria-hidden="true">?</kbd>
-                </button>
-                {page === "lab" ? (
-                  <a className="btn btn-ghost" href="#overview">← Back to profile</a>
-                ) : (
-                  <a className="btn btn-ghost" href={`#${LAB.id}`}>Usability Lab <kbd aria-hidden="true">{LAB.key}</kbd></a>
-                )}
-              </span>
+          ) : (
+            <div className="layout">
+              <Sidebar ref={searchRef} index={index} onSelect={onSelect} active={active} onNav={goTo} onHelp={() => setHelpOpen(true)} />
+              <div className="content">
+                <ProfilePage active={active} onNav={goTo} onSearch={focusSearch} />
+                <Footer page={page} onHelp={() => setHelpOpen(true)} />
+              </div>
             </div>
-          </footer>
+          )}
           <ShortcutHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
         </ToastProvider>
       </ViewContext.Provider>

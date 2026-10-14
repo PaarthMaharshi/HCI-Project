@@ -10,7 +10,7 @@ function Hl({ text, query }) {
 }
 
 // ARIA 1.2 combobox: input keeps focus, aria-activedescendant points at the option.
-export const SearchBox = forwardRef(function SearchBox({ index, onSelect }, inputRef) {
+export const SearchBox = forwardRef(function SearchBox({ index, onSelect, placeholder = "Search projects, skills, marks…" }, inputRef) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
@@ -61,7 +61,7 @@ export const SearchBox = forwardRef(function SearchBox({ index, onSelect }, inpu
         aria-autocomplete="list"
         aria-activedescendant={showList && results[active] ? `opt-${results[active].key}` : undefined}
         autoComplete="off"
-        placeholder="Search projects, skills, marks…"
+        placeholder={placeholder}
         value={query}
         onChange={(e) => {
           setQuery(e.target.value);

@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import { Annotation } from "../components/Annotation.jsx";
 import { BriefcaseIcon, CapIcon, CodeIcon, HomeIcon, MailIcon, SearchIcon } from "../components/Icons.jsx";
 import { Reveal } from "../components/Motion.jsx";
 import Dock from "../components/reactbits/Dock/Dock.jsx";
+import { PHONE, useMediaQuery } from "../hooks/useMediaQuery.js";
 import { usePrefs } from "../hooks/usePrefs.js";
 import { Activities } from "../sections/Activities.jsx";
 import { Education } from "../sections/Education.jsx";
@@ -20,19 +20,6 @@ function Section({ id, children, labelledBy = `${id}-h` }) {
       </div>
     </section>
   );
-}
-
-const PHONE = "(max-width: 47.99rem)";
-
-function usePhone() {
-  const [phone, setPhone] = useState(() => matchMedia(PHONE).matches);
-  useEffect(() => {
-    const mq = matchMedia(PHONE);
-    const on = () => setPhone(mq.matches);
-    mq.addEventListener("change", on);
-    return () => mq.removeEventListener("change", on);
-  }, []);
-  return phone;
 }
 
 // Thumb-reach bottom bar on phones (react-bits Dock). The six most-used
@@ -66,7 +53,7 @@ function PhoneDock({ active, onNav, onSearch }) {
 }
 
 export function ProfilePage({ active, onNav, onSearch }) {
-  const phone = usePhone();
+  const phone = useMediaQuery(PHONE);
   return (
     <>
       <main id="main" tabIndex={-1}>
@@ -77,14 +64,8 @@ export function ProfilePage({ active, onNav, onSearch }) {
         <Section id="projects"><Projects /></Section>
         <Section id="education"><Education /></Section>
         <Section id="activities"><Activities /></Section>
-        <div className="container duo">
-          <section id="writing" data-section="writing" aria-labelledby="writing-h" className="page-section" tabIndex={-1}>
-            <Reveal><Writing /></Reveal>
-          </section>
-          <section id="social" data-section="social" aria-labelledby="social-h" className="page-section" tabIndex={-1}>
-            <Reveal delay={0.1}><Social /></Reveal>
-          </section>
-        </div>
+        <Section id="writing"><Writing /></Section>
+        <Section id="social"><Social /></Section>
       </main>
       {phone && <PhoneDock active={active} onNav={onNav} onSearch={onSearch} />}
     </>

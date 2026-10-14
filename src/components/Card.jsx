@@ -1,9 +1,12 @@
 import { usePrefs } from "../hooks/usePrefs.js";
 import SpotlightCard from "./reactbits/SpotlightCard/SpotlightCard.jsx";
 
-// Every searchable item is a Card with id="item-<id>" so search can scroll to it.
-// `spotlight` adds the react-bits hover/focus glow in the section's accent colour.
-export function Card({ id, as: Tag = "article", className = "", spotlight = false, children, ...rest }) {
+// Every searchable item has id="item-<id>" so search can scroll to and highlight it.
+// Variants:
+//   default    boxed card (used in the Usability Lab)
+//   plain      no box: an open row/column separated by hairlines
+//   spotlight  plain row with the react-bits glow following the pointer or keyboard focus
+export function Card({ id, as: Tag = "article", className = "", plain = false, spotlight = false, children, ...rest }) {
   const { theme } = usePrefs();
   const itemProps = {
     id: id ? `item-${id}` : undefined,
@@ -16,9 +19,10 @@ export function Card({ id, as: Tag = "article", className = "", spotlight = fals
       <SpotlightCard
         theme={theme}
         spotlightColor="var(--accent)"
-        intensity={0.35}
-        borderGlow={0.8}
-        className={`card ${className}`}
+        intensity={0.45}
+        borderGlow={0}
+        className={`item item-glow ${className}`}
+        style={{ "--spotlight-card-surface": "transparent", "--spotlight-card-border": "transparent", "--spotlight-card-shadow": "none" }}
         role={Tag === "article" ? "article" : undefined}
         {...itemProps}
         {...rest}
@@ -28,7 +32,7 @@ export function Card({ id, as: Tag = "article", className = "", spotlight = fals
     );
 
   return (
-    <Tag {...itemProps} className={`card ${className}`} {...rest}>
+    <Tag {...itemProps} className={`${plain ? "item" : "card"} ${className}`} {...rest}>
       {children}
     </Tag>
   );

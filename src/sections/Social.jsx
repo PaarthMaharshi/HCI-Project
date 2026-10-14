@@ -1,30 +1,28 @@
 import { profile } from "../data/profile.js";
 import { Annotation } from "../components/Annotation.jsx";
-import { ExternalIcon, GitHubIcon, LinkedInIcon } from "../components/Icons.jsx";
-import { SectionHead } from "./SectionHead.jsx";
+import { GitHubIcon, LinkedInIcon, ExternalIcon } from "../components/Icons.jsx";
+import { SectionBand } from "../components/SectionBand.jsx";
 
 const ICONS = { "social-github": GitHubIcon, "social-linkedin": LinkedInIcon };
 
 export function Social() {
   return (
     <>
-      <SectionHead id="social" eyebrow="Elsewhere" title="Social">
+      <SectionBand id="social" title="Social">
         Find me on these sites.
-      </SectionHead>
+      </SectionBand>
       <Annotation id="social" block />
-      <ul className="grid grid-2" style={{ listStyle: "none", padding: 0 }}>
+      <ul className="social-list">
         {profile.social.map((s) => {
           const Icon = ICONS[s.id] ?? ExternalIcon;
           return (
-            <li key={s.id} style={{ margin: 0 }}>
-              <a className="card social-card" id={`item-${s.id}`} data-item="" href={s.url} target="_blank" rel="noreferrer">
-                <Icon className="icon-big" />
-                <span>
-                  <strong style={{ fontSize: "1.15rem", display: "block" }}>{s.label}</strong>
-                  <span className="note">{s.blurb}</span>
-                  <span className="visually-hidden"> (opens in a new tab)</span>
-                </span>
-                <ExternalIcon className="icon go" />
+            <li key={s.id}>
+              <a className="social-row" id={`item-${s.id}`} data-item="" href={s.url} target="_blank" rel="noreferrer">
+                <Icon className="social-icon" />
+                <span className="social-name">{s.label}</span>
+                <span className="social-blurb">{s.blurb}</span>
+                <span className="social-arrow" aria-hidden="true">↗</span>
+                <span className="visually-hidden"> (opens in a new tab)</span>
               </a>
             </li>
           );

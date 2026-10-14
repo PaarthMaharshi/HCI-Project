@@ -5,7 +5,7 @@ An interactive personal profile that applies established HCI principles and incl
 - **Stack:** React 18 + Vite 6, plain CSS (design tokens), animated pieces from [React Bits](https://github.com/DavidHDev/react-bits), no backend
 - **Layout:** one scrolling page — Overview (hero, skills, timeline) · Experience · Projects · Education · Activities · Writing · Social — plus a separate **Usability Lab** view at `#lab`
 - **Look:** warm cream background with colourful section accents; light by default, dark theme on request
-- **Highlights:** global search (`/`), sticky nav with scroll-spy, number keys (`1`–`7` sections, `8` Lab), phone bottom dock, larger-text mode, "HCI notes" toggle, reduced-motion support, WCAG 2.2 AA
+- **Highlights:** fixed left sidebar with scroll-spy and a reading-progress rail (a Menu drawer on phones), marquee section headings, open editorial layout (no boxed cards), global search (`/`), number keys (`1`–`7` sections, `8` Lab), phone bottom dock, larger-text mode, "HCI notes" toggle, reduced-motion support, WCAG 2.2 AA
 
 ## Run locally
 
@@ -71,7 +71,9 @@ src/
   hooks/                useLocalStorage, usePrefs, useHotkeys
   lib/                  search, SUS scoring, CSV, date formatting
   components/           Header, SearchBox, Card, Disclosure, TagFilter, Motion (accessible animation wrappers), …
-  components/reactbits/ React Bits components (Aurora, BlurText, ShinyText, GradientText, CountUp, SpotlightCard, AnimatedContent, Dock)
+  components/Sidebar.jsx desktop sidebar, phone top bar and Menu drawer
+  components/SectionBand.jsx marquee section heading
+  components/reactbits/ React Bits components (Aurora, BlurText, ShinyText, GradientText, CountUp, SpotlightCard, AnimatedContent, ScrollVelocity, Dock)
   pages/                ProfilePage (one scrolling page) and LabPage (#lab)
   sections/             one file per profile section; lab/ holds the Usability Lab
 docs/
@@ -94,9 +96,9 @@ docs/
 
 ## Verification done
 
-- Automated browser run (headless Chrome via puppeteer-core): 42 checks covering light-by-default with OS dark mode, number keys and nav links scrolling to sections, scroll-spy, Back button, search → reveal → highlight, filters, T1–T5, Lab view and back link, SUS scoring (all 3s = 50, best case = 100), CSV contents and quoting, clear-with-confirm, reduced motion (everything visible, final numbers shown), phone dock, 360px layout with no horizontal scroll, target sizes, no console errors.
-- axe-core: 0 violations on the profile page (light and dark, desktop and phone) and the populated Lab view.
+- Automated browser run (headless Chrome via puppeteer-core): 51 checks covering sidebar, progress rail, decorative bands, no boxed cards, phone Menu drawer (focus trap, Esc, link closes it), light-by-default with OS dark mode, number keys and nav links scrolling to sections, scroll-spy, Back button, search → reveal → highlight, filters, T1–T5, Lab view and back link, SUS scoring (all 3s = 50, best case = 100), CSV contents and quoting, clear-with-confirm, reduced motion (everything visible, final numbers shown), phone dock, 360px layout with no horizontal scroll, target sizes, no console errors.
+- axe-core: 0 violations on the profile page (light and dark, desktop and phone, drawer open) and the populated Lab view.
 
 ## Credits
 
-Animated components from [React Bits](https://github.com/DavidHDev/react-bits) by David Haz (MIT + Commons Clause), copied into `src/components/reactbits/` (JS-CSS variants). `Dock.jsx` has one local change: an `ariaLabel` prop. They are used through `src/components/Motion.jsx`, which turns animation off under `prefers-reduced-motion` and gives screen readers the plain text.
+Animated components from [React Bits](https://github.com/DavidHDev/react-bits) by David Haz (MIT + Commons Clause), copied into `src/components/reactbits/` (JS-CSS variants). Two local changes: `Dock.jsx` takes an `ariaLabel` prop, and `ScrollVelocity.jsx` defines its inner `VelocityText` at module level so the band doesn't restart when the page re-renders. They are used through `src/components/Motion.jsx`, which turns animation off under `prefers-reduced-motion` and gives screen readers the plain text.

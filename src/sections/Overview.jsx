@@ -1,9 +1,8 @@
 import { profile } from "../data/profile.js";
 import { Annotation } from "../components/Annotation.jsx";
-import { Card } from "../components/Card.jsx";
 import { CopyButton } from "../components/CopyButton.jsx";
 import { PinIcon } from "../components/Icons.jsx";
-import { BlurHeading, Count, Gradient, Reveal, Shiny } from "../components/Motion.jsx";
+import { BlurHeading, Count, Gradient, Reveal } from "../components/Motion.jsx";
 import Aurora from "../components/reactbits/Aurora/Aurora.jsx";
 import { usePrefs } from "../hooks/usePrefs.js";
 import { formatMonth } from "../lib/format.js";
@@ -25,43 +24,32 @@ function Hero() {
       </div>
       <div className="hero-veil" aria-hidden="true" />
       <div className="container hero-inner">
-        <div className="hero-main">
-          <div className="hero-top">
-            <div className="avatar" aria-hidden="true">{b.initials}</div>
-            <p className="pill">
-              <span className="status-dot" aria-hidden="true" />
-              <Shiny>{b.availability}</Shiny>
-            </p>
-          </div>
-          <p className="hero-hello">
-            <Gradient>Hi, I’m</Gradient>
-          </p>
-          <BlurHeading id="hero-name" text={b.name} className="hero-name" />
-          <p className="headline">{b.headline}</p>
-          <p className="hero-location">
-            <PinIcon /> {b.location}
-          </p>
-          <p className="bio">{b.bio}</p>
-          <div className="email-row" id="item-email" data-item="" tabIndex={-1}>
-            <span className="visually-hidden">Email: </span>
-            <a href={`mailto:${b.email}`}>{b.email}</a>
-            <CopyButton id="ctl-copy-email" text={b.email} label="Copy email" doneMessage="Email copied to clipboard" className="btn btn-primary" />
-          </div>
-          <Annotation id="copy" block />
+        <p className="hero-hello">
+          <Gradient>Hi, I’m</Gradient>
+        </p>
+        <BlurHeading id="hero-name" text={b.name} className="hero-name" />
+        <p className="headline">{b.headline}</p>
+        <p className="hero-location">
+          <PinIcon /> {b.location}
+        </p>
+        <p className="bio">{b.bio}</p>
+        <div className="email-row" id="item-email" data-item="" tabIndex={-1}>
+          <span className="visually-hidden">Email: </span>
+          <a href={`mailto:${b.email}`}>{b.email}</a>
+          <CopyButton id="ctl-copy-email" text={b.email} label="Copy email" doneMessage="Email copied to clipboard" className="btn btn-primary" />
         </div>
+        <Annotation id="copy" block />
 
-        <div className="hero-side">
-          <h2 className="visually-hidden">Quick facts</h2>
-          <ul className="stats">
-            {profile.stats.map((s) => (
-              <li key={s.caption} className="stat-card">
-                <Count value={s.value} label={s.label} suffix={s.label.endsWith("+") ? "+" : ""} className="stat-num" />
-                <span className="stat-caption">{s.caption}</span>
-              </li>
-            ))}
-          </ul>
-          <Annotation id="hero" block />
-        </div>
+        <h2 className="visually-hidden">Quick facts</h2>
+        <ul className="stats">
+          {profile.stats.map((s) => (
+            <li key={s.caption}>
+              <Count value={s.value} label={s.label} suffix={s.label.endsWith("+") ? "+" : ""} className="stat-num" />
+              <span className="stat-caption">{s.caption}</span>
+            </li>
+          ))}
+        </ul>
+        <Annotation id="hero" block />
       </div>
     </div>
   );
@@ -72,30 +60,31 @@ function About() {
   return (
     <div className="container about-grid">
       <Reveal>
-        <Card as="section" aria-labelledby="skills-h">
-          <span className="eyebrow">What I work with</span>
-          <h2 id="skills-h">Skills</h2>
+        <section aria-labelledby="skills-h" className="about-col">
+          <p className="mini-label">What I work with</p>
+          <h2 id="skills-h" className="about-title">Skills</h2>
           <Annotation id="skills" block />
-          {profile.skills.map((s) => (
-            <div className="skill-group" key={s.id} id={`item-${s.id}`} data-item="" tabIndex={-1}>
-              <h3>
-                <span className="visually-hidden">Skills: </span>
-                {s.group}
-              </h3>
-              <ul className="chips" aria-label={s.group}>
-                {s.items.map((i) => (
-                  <li key={i}><span className="chip">{i}</span></li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </Card>
+          <dl className="skills">
+            {profile.skills.map((s) => (
+              <div className="skill-row" key={s.id} id={`item-${s.id}`} data-item="" tabIndex={-1}>
+                <dt>{s.group}</dt>
+                <dd>
+                  <ul className="slash-list" aria-label={s.group}>
+                    {s.items.map((i) => (
+                      <li key={i}>{i}</li>
+                    ))}
+                  </ul>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
       </Reveal>
 
       <Reveal delay={0.1}>
-        <Card as="section" aria-labelledby="timeline-h">
-          <span className="eyebrow">Recently</span>
-          <h2 id="timeline-h">Timeline</h2>
+        <section aria-labelledby="timeline-h" className="about-col">
+          <p className="mini-label">Recently</p>
+          <h2 id="timeline-h" className="about-title">Timeline</h2>
           <Annotation id="timeline" block />
           <ol className="timeline">
             {profile.timeline.map((t) => (
@@ -111,7 +100,7 @@ function About() {
               </li>
             ))}
           </ol>
-        </Card>
+        </section>
       </Reveal>
     </div>
   );

@@ -2,8 +2,8 @@ import { profile } from "../data/profile.js";
 import { Card } from "../components/Card.jsx";
 import { EmptyState } from "../components/EmptyState.jsx";
 import { PenIcon } from "../components/Icons.jsx";
+import { SectionBand } from "../components/SectionBand.jsx";
 import { useView } from "../view.js";
-import { SectionHead } from "./SectionHead.jsx";
 
 const fmtDate = (d) => new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
@@ -12,9 +12,9 @@ export function Writing() {
   const posts = profile.posts;
   return (
     <>
-      <SectionHead id="writing" eyebrow="Blog" title="Writing">
+      <SectionBand id="writing" title="Writing">
         Articles and notes.
-      </SectionHead>
+      </SectionBand>
       {posts.length === 0 ? (
         <EmptyState
           icon={PenIcon}
@@ -28,21 +28,22 @@ export function Writing() {
           Articles on app development and agentic AI will appear here.
         </EmptyState>
       ) : (
-        <div className="grid grid-2">
+        <div className="rows">
           {posts.map((p) => (
-            <Card key={p.id} id={p.id} aria-labelledby={`${p.id}-h`}>
-              <p className="card-meta" style={{ marginBottom: "var(--space-2)" }}>
+            <Card key={p.id} id={p.id} plain className="post-row" aria-labelledby={`${p.id}-h`}>
+              <p className="row-date">
                 <time dateTime={p.date}>{fmtDate(p.date)}</time> · {p.readingMins} min read
               </p>
-              <h3 id={`${p.id}-h`}>
+              <h3 id={`${p.id}-h`} className="row-title">
                 <a href={p.url}>{p.title}</a>
               </h3>
               {p.excerpt && <p>{p.excerpt}</p>}
-              <ul className="chips" aria-label="Tags">
+              <p className="tag-words">
+                <span className="visually-hidden">Tags: </span>
                 {p.tags.map((t) => (
-                  <li key={t}><span className="chip">{t}</span></li>
+                  <span key={t}>#{t.replace(/\s+/g, "")}</span>
                 ))}
-              </ul>
+              </p>
             </Card>
           ))}
         </div>

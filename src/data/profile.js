@@ -7,6 +7,7 @@ export const profile = {
     name: "Paarth Maharshi",
     initials: "PM",
     headline: "B.Tech Computer Engineering, 3rd year · VJTI Mumbai",
+    tagline: "Computer Engineering · VJTI Mumbai",
     location: "Mumbai, Maharashtra",
     email: "paarthmahatree14@gmail.com",
     availability: "Looking for internships",

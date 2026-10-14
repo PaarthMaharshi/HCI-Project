@@ -6,10 +6,10 @@ This document maps each HCI principle to the feature that implements it. Turn on
 
 | # | Heuristic | Where it is applied |
 |---|---|---|
-| N1 | Visibility of system status | Scroll-spy: the header link for the section on screen is underlined in its colour and its number badge is filled; "Showing 2 of 4 projects" updates live as filters change; "Copy email" changes to "Copied" and a toast confirms it; the Lab task timer counts up; SUS shows "7 of 10 answered". |
+| N1 | Visibility of system status | Scroll-spy: the sidebar link for the section on screen is highlighted in its colour with a dot, and a progress rail fills as you read; "Showing 2 of 4 projects" updates live as filters change; "Copy email" changes to "Copied" and a toast confirms it; the Lab task timer counts up; SUS shows "7 of 10 answered". |
 | N2 | Match between system and the real world | CV vocabulary (Experience, Education, Projects); month–year dates ("May 2026 – Jul 2026"); marks shown as "82.50% (495 / 600)". |
 | N3 | User control and freedom | Esc closes search and the help panel; filters have "All" and "Clear filter"; deleting Lab data has Cancel; each section link updates the URL so the browser Back button works; the Lab has a clear "← Back to profile"; every disclosure can be closed again. |
-| N4 | Consistency and standards | One card style, one disclosure button style, one chip style across all sections; the header and section links never move; sections always appear in the same order; the Lab sub-tabs follow the WAI-ARIA tabs pattern. |
+| N4 | Consistency and standards | One card style, one disclosure button style, one chip style across all sections; the sidebar never moves (on phones the top bar and Menu stay put); sections always appear in the same order; the Lab sub-tabs follow the WAI-ARIA tabs pattern. |
 | N5 | Error prevention | "Clear all sessions" needs a second, explicit "Delete everything" click and says how many sessions will be lost; SUS cannot be scored until all 10 items are answered; a task cannot be started while another is running. |
 | N6 | Recognition rather than recall | Section names and their shortcut numbers are always visible; filter tags are shown as chips rather than typed; search suggests results while typing; settings (text size, theme) can also be found through search. |
 | N7 | Flexibility and efficiency of use | Keyboard accelerators: `/` search, `1`–`8` sections, `?` help, arrows + Enter in search results. Everything also works with mouse, touch and screen readers. |
@@ -33,9 +33,9 @@ This document maps each HCI principle to the feature that implements it. Turn on
 ## Gestalt principles
 
 - **Proximity**: each skill group sits on one row with its label; email and its Copy button share one container; date pills sit next to the titles they belong to.
-- **Similarity**: every section has its own colour (Overview orange, Experience rose, Education amber, Projects teal, Writing pink, Social blue, Activities green, Lab slate), used on the nav badge, section underline, card top border and chips. Items that look alike behave alike.
+- **Similarity**: every section has its own colour, shown most strongly in its tilted marquee band heading (Overview orange, Experience rose, Education amber, Projects teal, Writing pink, Social blue, Activities green, Lab slate), used on the nav badge, section underline, card top border and chips. Items that look alike behave alike.
 - **Visual hierarchy**: large display font for names and section titles, a coloured eyebrow label above each title, muted text for metadata, large score numbers in Education.
-- **Common region**: cards group related content; the hero groups identity and contact.
+- **Proximity instead of boxes**: content is not boxed. Rows are separated by hairlines and whitespace, Education columns by vertical rules, and related lines sit close together, so grouping comes from proximity rather than card borders (less visual noise, N8).
 
 ## Fitts's law and Hick's law
 
@@ -46,7 +46,7 @@ This document maps each HCI principle to the feature that implements it. Turn on
 ## Progressive disclosure, recognition, consistent navigation
 
 - Collapsed by default: project details/stack/link, HSC and SSC subject marks, experience bullets after the first.
-- The header and section links are sticky (fixed position) while scrolling.
+- The sidebar is fixed on the left on desktop; on phones the top bar is sticky and the same sidebar opens as a drawer from the Menu button (native `<dialog>`: focus is trapped, Esc closes it and focus returns to Menu).
 - Search opens collapsed content automatically and scrolls the item into view, so users never need to remember where something was.
 
 ## Accessibility (WCAG 2.2 AA)
@@ -70,7 +70,7 @@ Automated check: axe-core reports **0 violations** (WCAG 2.0/2.1/2.2 A and AA ru
 
 ## Animation (react-bits)
 
-Motion is used to guide attention, never to carry information: the name blurs in once, the four hero numbers count up once, sections fade up as they arrive, project and activity cards glow where the pointer or keyboard focus is (SpotlightCard), and a soft aurora moves behind the hero. All of it respects `prefers-reduced-motion` and none of it delays interaction. Components: Aurora, BlurText, ShinyText, GradientText, CountUp, SpotlightCard, AnimatedContent, Dock.
+Motion is used to guide attention, never to carry information: the name blurs in once, the four hero numbers count up once, sections fade up as they arrive, project and activity cards glow where the pointer or keyboard focus is (SpotlightCard), and a soft aurora moves behind the hero. All of it respects `prefers-reduced-motion` and none of it delays interaction. Section headings are tilted marquee bands (ScrollVelocity) whose speed follows the scroll; they are decorative (`aria-hidden`), the real `<h2>` sits below, and they stand still under reduced motion. Components: Aurora, BlurText, ShinyText, GradientText, CountUp, SpotlightCard (glow on project rows only), AnimatedContent, ScrollVelocity, Dock.
 
 ## Single data source
 

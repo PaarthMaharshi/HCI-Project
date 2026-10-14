@@ -2,32 +2,35 @@ import { profile } from "../data/profile.js";
 import { Card } from "../components/Card.jsx";
 import { Disclosure } from "../components/Disclosure.jsx";
 import { Count } from "../components/Motion.jsx";
+import { SectionBand } from "../components/SectionBand.jsx";
 import { formatMonth, formatRange } from "../lib/format.js";
-import { SectionHead } from "./SectionHead.jsx";
 
 export function Education() {
   return (
     <>
-      <SectionHead id="education" eyebrow="Study" title="Education">
+      <SectionBand id="education" title="Education">
         University and school, with scores.
-      </SectionHead>
-      <div className="grid grid-3">
+      </SectionBand>
+      <div className="edu-cols">
         {profile.education.map((e, i) => (
-          <Card key={e.id} id={e.id} aria-labelledby={`${e.id}-h`}>
-            <span className="date-pill">
+          <Card key={e.id} id={e.id} plain className="edu-col" aria-labelledby={`${e.id}-h`}>
+            <p className="row-date">
               {e.start ? formatRange(e.start, e.end) : formatMonth(e.end)}
               {e.status && ` · ${e.status}`}
-            </span>
-            <h3 id={`${e.id}-h`} style={{ marginTop: "var(--space-3)" }}>{e.degree}</h3>
-            <p className="card-meta">
+            </p>
+            {e.score ? (
+              <p className="score">
+                <Count value={parseFloat(e.score.label)} label={e.score.label} suffix="%" />
+                <small>{e.score.detail}</small>
+              </p>
+            ) : (
+              <p className="score score-text">Now</p>
+            )}
+            <h3 id={`${e.id}-h`} className="row-title">{e.degree}</h3>
+            <p className="row-meta">
               {e.institution}
               {e.board && <> · {e.board}</>}
             </p>
-            {e.score && (
-              <p className="score">
-                <Count value={parseFloat(e.score.label)} label={e.score.label} suffix="%" /> <small>({e.score.detail})</small>
-              </p>
-            )}
             {e.subjects && (
               <Disclosure id={e.id} label="Show subject marks" openLabel="Hide subject marks" annotate={i === 1}>
                 <table className="marks">

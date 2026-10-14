@@ -30,7 +30,7 @@ For each task: read it aloud exactly as written, press **Start** when you finish
 | T4 | "Copy the email address." | The "Email copied" toast appears (or they copy it manually and can paste it). |
 | T5 | "Make the text on the page larger." | They use the Larger text button (browser zoom counts, but note it). |
 
-While they work, write down on paper: hesitations, wrong clicks, things they say ("I expected…"), and whether they used search, the section links, scrolling, the phone dock or shortcuts.
+While they work, write down on paper: hesitations, wrong clicks, things they say ("I expected…"), and whether they used search, the sidebar (or Menu drawer on phones), scrolling, the phone dock or shortcuts.
 
 Do not help. If asked, say "What would you try?"
 

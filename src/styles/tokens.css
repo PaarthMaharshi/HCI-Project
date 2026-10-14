@@ -20,6 +20,7 @@
   --ok: #15803d;
   --bad: #b91c1c;
   --header-bg: rgb(255 248 238 / 0.86);
+  --side-bg: #fdf3e6;
 
   --c-overview: #c2410c;
   --c-experience: #be123c;
@@ -55,6 +56,7 @@
   --ok: #86efac;
   --bad: #fca5a5;
   --header-bg: rgb(23 17 12 / 0.86);
+  --side-bg: #1d1610;
 
   --c-overview: #fdba74;
   --c-experience: #fda4af;
@@ -75,6 +77,8 @@
 :root {
   --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-head: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+  --sidebar-w: 17.5rem;
   --radius: 1.25rem;
   --radius-sm: 0.7rem;
   --space-1: 0.25rem;
@@ -86,7 +90,7 @@
   --space-7: 3rem;
   --space-8: 5rem;
   --target: 2.75rem; /* 44px minimum touch target */
-  --header-h: 7rem; /* sticky header (two rows), used for scroll-margin */
+  --header-h: 1rem; /* sticky top bar height (phones/tablets), used for scroll-margin */
   font-size: 100%;
 }
 

@@ -1,29 +1,28 @@
 import { profile } from "../data/profile.js";
 import { Card } from "../components/Card.jsx";
 import { CodeIcon, TrophyIcon, UsersIcon } from "../components/Icons.jsx";
-import { SectionHead } from "./SectionHead.jsx";
+import { SectionBand } from "../components/SectionBand.jsx";
 
 const ICONS = { "act-hackathons": TrophyIcon, "act-agastya": UsersIcon, "act-leetcode": CodeIcon };
 
 export function Activities() {
   return (
     <>
-      <SectionHead id="activities" eyebrow="Beyond class" title="Activities & Achievements">
+      <SectionBand id="activities" title="Activities & Achievements" band="Activities">
         Hackathons, programs and practice.
-      </SectionHead>
-      <div className="grid grid-3">
+      </SectionBand>
+      <div className="rows">
         {profile.activities.map((a) => {
           const Icon = ICONS[a.id] ?? TrophyIcon;
           return (
-            <Card key={a.id} id={a.id} spotlight aria-labelledby={`${a.id}-h`}>
-              <Icon className="icon" style={{ width: "2rem", height: "2rem", color: "var(--accent)", marginBottom: "var(--space-2)" }} />
-              <h3 id={`${a.id}-h`}>{a.title}</h3>
-              <p>{a.detail}</p>
-              <ul className="chips" aria-label="Tags">
-                {a.tags.map((t) => (
-                  <li key={t}><span className="chip">{t}</span></li>
-                ))}
-              </ul>
+            <Card key={a.id} id={a.id} plain className="act-row" aria-labelledby={`${a.id}-h`}>
+              <span className="act-icon" aria-hidden="true">
+                <Icon />
+              </span>
+              <div>
+                <h3 id={`${a.id}-h`} className="row-title">{a.title}</h3>
+                <p className="act-detail">{a.detail}</p>
+              </div>
             </Card>
           );
         })}

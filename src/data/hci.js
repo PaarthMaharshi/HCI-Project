@@ -46,7 +46,9 @@ export const TASKS = [
 // Short labels shown when "Show HCI annotations" is on.
 export const NOTES = {
   search: "N6 Recognition · N7 Shortcuts (/)",
-  tabs: "N1 Scroll-spy shows where you are · Hick’s law (7 links)",
+  tabs: "N1 Scroll-spy + progress rail show where you are · Hick’s law (7 links)",
+  sidebar: "Consistent navigation · recognition over recall",
+  band: "Gestalt similarity: section colour band · static with reduced motion",
   dock: "Fitts’s law: thumb-reach bottom bar",
   hero: "Visual hierarchy · recognition (key facts first)",
   textSize: "WCAG 1.4.4 Resize text",
