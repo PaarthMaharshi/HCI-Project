@@ -1,14 +1,14 @@
 // Evaluation content for the Usability Lab and the HCI annotation labels.
 
 export const HEURISTICS = [
-  { id: "H1", name: "Visibility of system status", applied: "Active tab is underlined in its section colour; project filter shows a live “2 of 4 projects” count; copying the email shows a toast; the task timer counts up." },
-  { id: "H2", name: "Match between system and the real world", applied: "Plain labels (Experience, Education, Copy email), month–year dates and familiar CV section names." },
-  { id: "H3", name: "User control and freedom", applied: "Esc closes search and help; filters have a Clear button; deleting sessions has Cancel; each tab has its own URL so Back works." },
-  { id: "H4", name: "Consistency and standards", applied: "One card style and one expand/collapse control everywhere; navigation stays fixed at the top; standard ARIA tabs behaviour." },
+  { id: "H1", name: "Visibility of system status", applied: "The nav link for the section on screen is highlighted as you scroll (scroll-spy); project filter shows a live “2 of 4 projects” count; copying the email shows a toast; the task timer counts up." },
+  { id: "H2", name: "Match between system and the real world", applied: "Plain labels (Experience, Education, Copy email), month–year dates and familiar CV section order." },
+  { id: "H3", name: "User control and freedom", applied: "Esc closes search and help; filters have a Clear button; deleting sessions has Cancel; nav links update the URL so Back works." },
+  { id: "H4", name: "Consistency and standards", applied: "One card style and one expand/collapse control everywhere; the navigation stays fixed at the top; sections always appear in the same order." },
   { id: "H5", name: "Error prevention", applied: "Clearing sessions needs an inline confirmation; the SUS form can only be submitted once all 10 items are answered." },
-  { id: "H6", name: "Recognition rather than recall", applied: "Tabs are always visible and numbered; filter tags are shown as chips; search suggests results as you type; shortcut sheet on ?." },
-  { id: "H7", name: "Flexibility and efficiency of use", applied: "Keyboard shortcuts (/ to search, 1–8 for sections) for experienced users; everything also works with mouse and touch." },
-  { id: "H8", name: "Aesthetic and minimalist design", applied: "One section per view; details collapsed by default; colour used to group, not to decorate." },
+  { id: "H6", name: "Recognition rather than recall", applied: "Section links are always visible and numbered; filter tags are shown as chips; search suggests results as you type; shortcut sheet on ?." },
+  { id: "H7", name: "Flexibility and efficiency of use", applied: "Keyboard shortcuts (/ to search, 1–7 for sections, 8 for the Lab) for experienced users; everything also works with mouse and touch." },
+  { id: "H8", name: "Aesthetic and minimalist design", applied: "Key facts first in the hero; details collapsed by default; colour used to group, not to decorate." },
   { id: "H9", name: "Help users recognise, diagnose and recover from errors", applied: "Search with no matches suggests other terms; an empty project filter offers a Clear filter button; copy failure explains what to do." },
   { id: "H10", name: "Help and documentation", applied: "Keyboard shortcut sheet (? key or footer button); “Show HCI annotations” labels each design decision." },
 ];
@@ -46,7 +46,9 @@ export const TASKS = [
 // Short labels shown when "Show HCI annotations" is on.
 export const NOTES = {
   search: "N6 Recognition · N7 Shortcuts (/)",
-  tabs: "N4 Consistency · Hick’s law (8 choices)",
+  tabs: "N1 Scroll-spy shows where you are · Hick’s law (7 links)",
+  dock: "Fitts’s law: thumb-reach bottom bar",
+  hero: "Visual hierarchy · recognition (key facts first)",
   textSize: "WCAG 1.4.4 Resize text",
   theme: "WCAG contrast · user control",
   annotations: "N10 Help & documentation",

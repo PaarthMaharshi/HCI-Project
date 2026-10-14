@@ -1,11 +1,12 @@
 import { Annotation } from "../components/Annotation.jsx";
 
-export function SectionHead({ id, eyebrow, title, children }) {
+export function SectionHead({ id, eyebrow, title, children, level = "h2" }) {
+  const Heading = level;
   return (
     <div className="section-head">
       <div>
         <span className="eyebrow">{eyebrow}</span>
-        <h2 id={`${id}-h`}>{title}</h2>
+        <Heading id={`${id}-h`}>{title}</Heading>
       </div>
       {children && <p>{children}</p>}
       <Annotation id="sectionColour" />

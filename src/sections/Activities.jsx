@@ -11,11 +11,11 @@ export function Activities() {
       <SectionHead id="activities" eyebrow="Beyond class" title="Activities & Achievements">
         Hackathons, programs and practice.
       </SectionHead>
-      <div className="grid grid-2">
+      <div className="grid grid-3">
         {profile.activities.map((a) => {
           const Icon = ICONS[a.id] ?? TrophyIcon;
           return (
-            <Card key={a.id} id={a.id} aria-labelledby={`${a.id}-h`}>
+            <Card key={a.id} id={a.id} spotlight aria-labelledby={`${a.id}-h`}>
               <Icon className="icon" style={{ width: "2rem", height: "2rem", color: "var(--accent)", marginBottom: "var(--space-2)" }} />
               <h3 id={`${a.id}-h`}>{a.title}</h3>
               <p>{a.detail}</p>

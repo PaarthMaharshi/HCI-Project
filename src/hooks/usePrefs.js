@@ -1,17 +1,14 @@
 import { createContext, useContext, useEffect } from "react";
 import { useLocalStorage } from "./useLocalStorage.js";
 
-const systemDark = () =>
-  typeof matchMedia !== "undefined" && matchMedia("(prefers-color-scheme: dark)").matches;
-
-// theme: null follows the OS setting until the user picks one.
+// Light by default (bright, warm design); dark only when the visitor chooses it.
 export function usePrefsState() {
   const [prefs, setPrefs] = useLocalStorage("hci-prefs", {
     theme: null,
     largeText: false,
     annotations: false,
   });
-  const theme = prefs.theme ?? (systemDark() ? "dark" : "light");
+  const theme = prefs.theme === "dark" ? "dark" : "light";
 
   useEffect(() => {
     const d = document.documentElement;

@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#fff8ee" />
     <meta name="description" content="Paarth Maharshi: B.Tech Computer Engineering student at VJTI Mumbai. App development and agentic AI." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -11,11 +12,11 @@
     <title>Paarth Maharshi</title>
     <script>
       // Apply saved prefs before first paint so the theme doesn't flash.
+      // Light is the default; dark only when the visitor picked it.
       try {
         var p = JSON.parse(localStorage.getItem("hci-prefs") || "{}");
         var d = document.documentElement;
-        var dark = p.theme ? p.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
-        d.dataset.theme = dark ? "dark" : "light";
+        d.dataset.theme = p.theme === "dark" ? "dark" : "light";
         if (p.largeText) d.dataset.text = "large";
       } catch (e) {}
     </script>

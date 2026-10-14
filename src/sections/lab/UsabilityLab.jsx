@@ -42,7 +42,7 @@ export function UsabilityLab() {
 
   return (
     <>
-      <SectionHead id="lab" eyebrow="Evaluation" title="Usability Lab">
+      <SectionHead id="lab" eyebrow="Evaluation" title="Usability Lab" level="h1">
         For the facilitator: run tasks, collect SUS, rate heuristics, export results.
       </SectionHead>
 

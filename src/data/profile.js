@@ -177,16 +177,27 @@ export const profile = {
     { date: "2024-08", text: "Started B.Tech at VJTI, Mumbai", ref: { section: "education", id: "edu-vjti" } },
   ],
 
+  // Quick facts counted up in the hero. `label` is the exact text shown when counting ends.
+  stats: [
+    { value: 1, label: "1", caption: "Internship (Agentic AI)" },
+    { value: 4, label: "4", caption: "Projects built" },
+    { value: 3, label: "3", caption: "Hackathon finals" },
+    { value: 100, label: "100+", caption: "LeetCode problems" },
+  ],
+
   lastUpdated: "2026-10",
 };
 
+// Sections of the one-page profile, in page order. `key` is the keyboard shortcut.
 export const SECTIONS = [
   { id: "overview", label: "Overview", key: "1" },
   { id: "experience", label: "Experience", key: "2" },
-  { id: "education", label: "Education", key: "3" },
-  { id: "projects", label: "Projects", key: "4" },
-  { id: "writing", label: "Writing", key: "5" },
-  { id: "social", label: "Social", key: "6" },
-  { id: "activities", label: "Activities", key: "7" },
-  { id: "lab", label: "Usability Lab", key: "8" },
+  { id: "projects", label: "Projects", key: "3" },
+  { id: "education", label: "Education", key: "4" },
+  { id: "activities", label: "Activities", key: "5" },
+  { id: "writing", label: "Writing", key: "6" },
+  { id: "social", label: "Social", key: "7" },
 ];
+
+// The Usability Lab is a separate view (#lab) for the test facilitator.
+export const LAB = { id: "lab", label: "Usability Lab", key: "8" };

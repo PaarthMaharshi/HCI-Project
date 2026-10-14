@@ -41,9 +41,9 @@ export function Projects() {
           Try removing a tag, or show all projects.
         </EmptyState>
       ) : (
-        <div className="grid grid-2">
+        <div className="grid grid-projects">
           {shown.map((p, i) => (
-            <Card key={p.id} id={p.id} aria-labelledby={`${p.id}-h`}>
+            <Card key={p.id} id={p.id} spotlight aria-labelledby={`${p.id}-h`}>
               <div className="card-top">
                 <h3 id={`${p.id}-h`}>{p.title}</h3>
                 <span className="date-pill">{formatRange(p.start, p.end)}</span>

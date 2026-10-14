@@ -4,9 +4,9 @@
 
 ## Before each session (2 min)
 
-1. Open the site, go to **Usability Lab** (press `8`).
+1. Open the site and go to the **Usability Lab** (press `8`, use the footer link, or open `/#lab`).
 2. Click **+ New participant**. This gives the next ID (P1, P2…) and resets text size and annotations, so T5 starts fresh.
-3. Open the profile for the participant with the **new tab** link in the Tasks panel. Make sure it shows **Overview** at the top and HCI annotations are off.
+3. Open the profile for the participant with the **new tab** link in the Tasks panel (or the plain site URL). Make sure it is scrolled to the top and HCI notes are off. The Lab is a separate view, so the participant never sees it.
 4. Keep the Lab tab for yourself (second screen, or switch with Ctrl+Tab while the participant isn't looking).
 
 ## Introduction (read aloud, 1 min)
@@ -30,7 +30,7 @@ For each task: read it aloud exactly as written, press **Start** when you finish
 | T4 | "Copy the email address." | The "Email copied" toast appears (or they copy it manually and can paste it). |
 | T5 | "Make the text on the page larger." | They use the Larger text button (browser zoom counts, but note it). |
 
-While they work, write down on paper: hesitations, wrong clicks, things they say ("I expected…"), and whether they used search, tabs or shortcuts.
+While they work, write down on paper: hesitations, wrong clicks, things they say ("I expected…"), and whether they used search, the section links, scrolling, the phone dock or shortcuts.
 
 Do not help. If asked, say "What would you try?"
 

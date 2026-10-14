@@ -2,9 +2,10 @@
 
 An interactive personal profile that applies established HCI principles and includes a built-in **Usability Lab** for evaluating the site with real users.
 
-- **Stack:** React 18 + Vite 6, plain CSS (design tokens), no UI library, no backend
-- **Sections:** Overview · Experience · Education · Projects · Writing · Social · Activities · Usability Lab
-- **Highlights:** global search (`/`), number-key navigation (`1`–`8`), light/dark themes, larger-text mode, "Show HCI annotations" toggle, WCAG 2.2 AA
+- **Stack:** React 18 + Vite 6, plain CSS (design tokens), animated pieces from [React Bits](https://github.com/DavidHDev/react-bits), no backend
+- **Layout:** one scrolling page — Overview (hero, skills, timeline) · Experience · Projects · Education · Activities · Writing · Social — plus a separate **Usability Lab** view at `#lab`
+- **Look:** warm cream background with colourful section accents; light by default, dark theme on request
+- **Highlights:** global search (`/`), sticky nav with scroll-spy, number keys (`1`–`7` sections, `8` Lab), phone bottom dock, larger-text mode, "HCI notes" toggle, reduced-motion support, WCAG 2.2 AA
 
 ## Run locally
 
@@ -48,7 +49,7 @@ No server or environment variables are needed.
 
 ## Usability Lab
 
-Tab 8. Lets a facilitator:
+Open it with the footer link, the `8` key or `/#lab`. It is kept off the profile page so test participants never see it. It lets a facilitator:
 
 1. **Tasks**: add a participant (anonymous IDs P1, P2…), time tasks T1–T5, mark Done or Gave up.
 2. **SUS**: standard 10-item questionnaire, scored automatically (odd: score − 1, even: 5 − score, sum × 2.5), compared with the 68 average and graded A–F.
@@ -69,8 +70,10 @@ src/
   styles/global.css     layout and components
   hooks/                useLocalStorage, usePrefs, useHotkeys
   lib/                  search, SUS scoring, CSV, date formatting
-  components/           Header, Tabs, SearchBox, Card, Disclosure, TagFilter, …
-  sections/             one file per tab; lab/ holds the Usability Lab
+  components/           Header, SearchBox, Card, Disclosure, TagFilter, Motion (accessible animation wrappers), …
+  components/reactbits/ React Bits components (Aurora, BlurText, ShinyText, GradientText, CountUp, SpotlightCard, AnimatedContent, Dock)
+  pages/                ProfilePage (one scrolling page) and LabPage (#lab)
+  sections/             one file per profile section; lab/ holds the Usability Lab
 docs/
   01-ia-and-wireframes.md
   02-design-rationale.md
@@ -85,11 +88,15 @@ docs/
 | `/` | Focus search |
 | `↑` `↓` `Enter` | Choose a search result (it opens, scrolls into view and is highlighted) |
 | `Esc` | Clear / close search, close help |
-| `1`–`8` | Switch section |
-| `←` `→` `Home` `End` | Move between tabs when a tab has focus |
+| `1`–`7` | Jump to a section (Overview, Experience, Projects, Education, Activities, Writing, Social) |
+| `8` | Open the Usability Lab |
 | `?` | Keyboard shortcut help |
 
 ## Verification done
 
-- Automated browser run (headless Chrome via puppeteer-core): 48 checks covering search → reveal → highlight, filters, T1–T5, SUS scoring (all 3s = 50, best case = 100), CSV contents and quoting, clear-with-confirm, Back button, arrow-key tabs, 360px layout with no horizontal scroll, target sizes, no console errors.
-- axe-core: 0 violations on all 8 tabs in light and dark themes.
+- Automated browser run (headless Chrome via puppeteer-core): 42 checks covering light-by-default with OS dark mode, number keys and nav links scrolling to sections, scroll-spy, Back button, search → reveal → highlight, filters, T1–T5, Lab view and back link, SUS scoring (all 3s = 50, best case = 100), CSV contents and quoting, clear-with-confirm, reduced motion (everything visible, final numbers shown), phone dock, 360px layout with no horizontal scroll, target sizes, no console errors.
+- axe-core: 0 violations on the profile page (light and dark, desktop and phone) and the populated Lab view.
+
+## Credits
+
+Animated components from [React Bits](https://github.com/DavidHDev/react-bits) by David Haz (MIT + Commons Clause), copied into `src/components/reactbits/` (JS-CSS variants). `Dock.jsx` has one local change: an `ariaLabel` prop. They are used through `src/components/Motion.jsx`, which turns animation off under `prefers-reduced-motion` and gives screen readers the plain text.

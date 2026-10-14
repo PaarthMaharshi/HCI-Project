@@ -1,40 +1,36 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { SECTIONS, profile } from "./data/profile.js";
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { LAB, SECTIONS, profile } from "./data/profile.js";
 import { Header } from "./components/Header.jsx";
 import { KeyboardIcon } from "./components/Icons.jsx";
 import { ShortcutHelp } from "./components/ShortcutHelp.jsx";
 import { ToastProvider } from "./components/Toast.jsx";
 import { PrefsContext, usePrefsState } from "./hooks/usePrefs.js";
 import { useHotkeys } from "./hooks/useHotkeys.js";
+import { useScrollSpy } from "./hooks/useScrollSpy.js";
 import { buildIndex } from "./lib/search.js";
 import { formatMonth } from "./lib/format.js";
 import { ViewContext } from "./view.js";
-import { Activities } from "./sections/Activities.jsx";
-import { Education } from "./sections/Education.jsx";
-import { Experience } from "./sections/Experience.jsx";
-import { Overview } from "./sections/Overview.jsx";
-import { Projects, matchesTags } from "./sections/Projects.jsx";
-import { Social } from "./sections/Social.jsx";
-import { Writing } from "./sections/Writing.jsx";
-import { UsabilityLab } from "./sections/lab/UsabilityLab.jsx";
+import { ProfilePage } from "./pages/ProfilePage.jsx";
+import { matchesTags } from "./sections/Projects.jsx";
 
-const PANELS = { overview: Overview, experience: Experience, education: Education, projects: Projects, writing: Writing, social: Social, activities: Activities, lab: UsabilityLab };
+// The Lab is only for facilitators, so it loads on demand.
+const LabPage = lazy(() => import("./pages/LabPage.jsx").then((m) => ({ default: m.LabPage })));
+
 const SETTING_TARGETS = { textSize: "ctl-text-size", theme: "ctl-theme", annotations: "ctl-annotations" };
+const SECTION_IDS = SECTIONS.map((s) => s.id);
 
-const tabFromHash = () => {
-  const h = window.location.hash.slice(1);
-  return SECTIONS.some((s) => s.id === h) ? h : "overview";
-};
-
+const hashId = () => window.location.hash.slice(1);
+const pageFromHash = () => (hashId() === LAB.id ? "lab" : "profile");
 const reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // Scrolls to an element, moves focus to it and flashes a highlight ring.
-function flash(elementId) {
+function flash(elementId, { block = "center", ring = true } = {}) {
   const el = document.getElementById(elementId);
   if (!el) return;
-  el.scrollIntoView({ block: "center", behavior: reducedMotion() ? "auto" : "smooth" });
-  if (el.tabIndex < 0 && !el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
+  el.scrollIntoView({ block, behavior: reducedMotion() ? "auto" : "smooth" });
+  if (!el.hasAttribute("tabindex") && el.tabIndex < 0) el.setAttribute("tabindex", "-1");
   el.focus({ preventScroll: true });
+  if (!ring) return;
   el.classList.remove("is-highlighted");
   void el.offsetWidth; // restart the animation
   el.classList.add("is-highlighted");
@@ -43,37 +39,53 @@ function flash(elementId) {
 
 export default function App() {
   const prefs = usePrefsState();
-  const [active, setActive] = useState(tabFromHash);
+  const [page, setPage] = useState(pageFromHash);
   const [openIds, setOpenIds] = useState(() => new Set());
   const [projectTags, setProjectTags] = useState([]);
   const [helpOpen, setHelpOpen] = useState(false);
-  const [pendingFlash, setPendingFlash] = useState(null);
+  const [pending, setPending] = useState(null);
   const searchRef = useRef();
   const index = useMemo(() => buildIndex(profile), []);
+  const [active, setActive] = useScrollSpy(SECTION_IDS, page === "profile");
 
+  // #lab switches to the Lab view; any other hash is a section of the profile.
   useEffect(() => {
-    const onHash = () => setActive(tabFromHash());
+    const onHash = () => {
+      const next = pageFromHash();
+      setPage(next);
+      if (next === "profile" && SECTION_IDS.includes(hashId())) setPending({ el: hashId(), block: "start", ring: false, n: Date.now() });
+      if (next === "lab") window.scrollTo(0, 0);
+    };
     window.addEventListener("hashchange", onHash);
+    if (SECTION_IDS.includes(hashId()) && hashId() !== "overview") setPending({ el: hashId(), block: "start", ring: false, n: Date.now() });
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
   useEffect(() => {
-    const label = SECTIONS.find((s) => s.id === active)?.label;
-    document.title = active === "overview" ? profile.basics.name : `${label} · ${profile.basics.name}`;
-  }, [active]);
+    document.title = page === "lab" ? `${LAB.label} · ${profile.basics.name}` : profile.basics.name;
+  }, [page]);
 
-  // Flash after React has rendered the target tab / opened disclosure.
+  // Keep the address bar in step with the section on screen, without adding history entries.
   useEffect(() => {
-    if (!pendingFlash) return;
-    const id = requestAnimationFrame(() => flash(pendingFlash.el));
-    return () => cancelAnimationFrame(id);
-  }, [pendingFlash]);
+    if (page !== "profile" || !active || hashId() === active) return;
+    if (!hashId() && active === "overview") return;
+    history.replaceState(null, "", `#${active}`);
+  }, [active, page]);
 
-  const goTo = useCallback((section, { focusPanel = false } = {}) => {
-    if (section !== tabFromHash()) window.location.hash = section; // pushes history, so Back works
+  // Act after React has rendered the target (opened disclosure, cleared filter, switched page).
+  useEffect(() => {
+    if (!pending) return;
+    const id = requestAnimationFrame(() => flash(pending.el, pending));
+    return () => cancelAnimationFrame(id);
+  }, [pending]);
+
+  // Jump to a section (pushes history so Back returns), or to a specific element in it.
+  const goTo = useCallback((section, { target } = {}) => {
+    if (hashId() !== section) history.pushState(null, "", `#${section}`);
+    setPage("profile");
     setActive(section);
-    if (focusPanel) setPendingFlash({ el: `panel-${section}`, n: Date.now() });
-  }, []);
+    setPending(target ? { el: target, n: Date.now() } : { el: section, block: "start", ring: false, n: Date.now() });
+  }, [setActive]);
 
   const toggleOpen = useCallback((id) => {
     setOpenIds((s) => {
@@ -83,35 +95,39 @@ export default function App() {
     });
   }, []);
 
-  // Show a specific item: switch tab, clear a filter hiding it, open its details, flash it.
+  // Show a specific item: clear a filter hiding it, open its details, scroll to it and flash it.
   const reveal = useCallback(
     (section, id, { disclose = false } = {}) => {
-      goTo(section);
       if (section === "projects") {
         const p = profile.projects.find((x) => x.id === id);
         if (p && !matchesTags(p, projectTags)) setProjectTags([]);
       }
       if (disclose) setOpenIds((s) => new Set(s).add(id));
-      setPendingFlash({ el: `item-${id}`, n: Date.now() });
+      setPending({ el: `item-${id}`, n: Date.now() });
     },
-    [goTo, projectTags]
+    [projectTags]
   );
 
   const onSelect = useCallback(
     (entry) => {
       if (entry.action === "help") return setHelpOpen(true);
-      if (SETTING_TARGETS[entry.action]) return setPendingFlash({ el: SETTING_TARGETS[entry.action], n: Date.now() });
-      if (entry.action === "email") {
-        goTo("overview");
-        return setPendingFlash({ el: "ctl-copy-email", n: Date.now() });
-      }
+      if (SETTING_TARGETS[entry.action]) return setPending({ el: SETTING_TARGETS[entry.action], n: Date.now() });
+      if (entry.action === "email") return setPending({ el: "ctl-copy-email", n: Date.now() });
       reveal(entry.section, entry.id, { disclose: entry.disclose });
     },
-    [goTo, reveal]
+    [reveal]
   );
 
-  const hotkeys = { "/": () => searchRef.current?.focus(), "?": () => setHelpOpen(true) };
-  for (const s of SECTIONS) hotkeys[s.key] = () => goTo(s.id);
+  const focusSearch = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: reducedMotion() ? "auto" : "smooth" });
+    searchRef.current?.focus({ preventScroll: true });
+  }, []);
+
+  const hotkeys = { "?": () => setHelpOpen(true), [LAB.key]: () => { window.location.hash = LAB.id; } };
+  if (page === "profile") {
+    hotkeys["/"] = () => searchRef.current?.focus();
+    for (const s of SECTIONS) hotkeys[s.key] = () => goTo(s.id);
+  }
   useHotkeys(hotkeys);
 
   const view = { active, goTo, openIds, toggleOpen, projectTags, setProjectTags, reveal };
@@ -120,41 +136,32 @@ export default function App() {
     <PrefsContext.Provider value={prefs}>
       <ViewContext.Provider value={view}>
         <ToastProvider>
-          <a className="skip-link" href="#main" onClick={(e) => { e.preventDefault(); document.getElementById(`panel-${active}`)?.focus(); }}>
+          <a className="skip-link" href="#main" onClick={(e) => { e.preventDefault(); document.getElementById("main")?.focus(); }}>
             Skip to content
           </a>
-          <Header ref={searchRef} index={index} onSelect={onSelect} active={active} onTab={goTo} />
-          <main id="main" className="container">
-            {/* Overview has the visible h1 (the name); other tabs get a hidden one. */}
-            {active !== "overview" && (
-              <h1 className="visually-hidden">
-                {profile.basics.name}: {SECTIONS.find((s) => s.id === active)?.label}
-              </h1>
-            )}
-            {SECTIONS.map((s) => {
-              const Panel = PANELS[s.id];
-              return (
-                <div
-                  key={s.id}
-                  role="tabpanel"
-                  id={`panel-${s.id}`}
-                  aria-labelledby={`tab-${s.id}`}
-                  data-section={s.id}
-                  className="panel"
-                  tabIndex={-1}
-                  hidden={active !== s.id}
-                >
-                  <Panel />
-                </div>
-              );
-            })}
-          </main>
+          {page === "lab" ? (
+            <Suspense fallback={<p className="container lab-main">Loading the Usability Lab…</p>}>
+              <LabPage />
+            </Suspense>
+          ) : (
+            <>
+              <Header ref={searchRef} index={index} onSelect={onSelect} active={active} onNav={goTo} />
+              <ProfilePage active={active} onNav={goTo} onSearch={focusSearch} />
+            </>
+          )}
           <footer className="site-footer">
             <div className="container">
               <span>© {profile.basics.name} · Last updated {formatMonth(profile.lastUpdated)}</span>
-              <button type="button" className="btn btn-ghost" onClick={() => setHelpOpen(true)}>
-                <KeyboardIcon /> Keyboard shortcuts <kbd aria-hidden="true">?</kbd>
-              </button>
+              <span className="footer-actions">
+                <button type="button" className="btn btn-ghost" onClick={() => setHelpOpen(true)}>
+                  <KeyboardIcon /> Keyboard shortcuts <kbd aria-hidden="true">?</kbd>
+                </button>
+                {page === "lab" ? (
+                  <a className="btn btn-ghost" href="#overview">← Back to profile</a>
+                ) : (
+                  <a className="btn btn-ghost" href={`#${LAB.id}`}>Usability Lab <kbd aria-hidden="true">{LAB.key}</kbd></a>
+                )}
+              </span>
             </div>
           </footer>
           <ShortcutHelp open={helpOpen} onClose={() => setHelpOpen(false)} />

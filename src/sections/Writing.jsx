@@ -20,7 +20,7 @@ export function Writing() {
           icon={PenIcon}
           title="No posts yet"
           action={
-            <button type="button" className="btn btn-primary" onClick={() => goTo("projects", { focusPanel: true })}>
+            <button type="button" className="btn btn-primary" onClick={() => goTo("projects")}>
               See my projects instead
             </button>
           }
