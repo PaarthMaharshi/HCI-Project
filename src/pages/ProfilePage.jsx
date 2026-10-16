@@ -1,4 +1,3 @@
-import { Annotation } from "../components/Annotation.jsx";
 import { BriefcaseIcon, CapIcon, CodeIcon, HomeIcon, MailIcon, SearchIcon } from "../components/Icons.jsx";
 import { Reveal } from "../components/Motion.jsx";
 import Dock from "../components/reactbits/Dock/Dock.jsx";
@@ -47,7 +46,6 @@ function PhoneDock({ active, onNav, onSearch }) {
         accentColor="#c2410c"
         showBadges={false}
       />
-      <Annotation id="dock" />
     </nav>
   );
 }

@@ -36,10 +36,8 @@ export function buildIndex(profile) {
   for (const a of profile.activities)
     add({ section: "activities", id: a.id, title: a.title, meta: a.tags.join(", "), text: `activity achievement ${a.detail}` });
 
-  // Settings are searchable too, so "bigger text" or "dark" finds the control.
-  add({ section: "settings", id: "text-size", title: "Larger text", meta: "Setting in the header", text: "text size font bigger larger zoom increase readability", action: "textSize" });
+  // Settings are searchable too, so "dark" finds the control.
   add({ section: "settings", id: "theme", title: "Dark / light theme", meta: "Setting in the header", text: "theme dark light mode colour color night", action: "theme" });
-  add({ section: "settings", id: "annotations", title: "Show HCI annotations", meta: "Setting in the header", text: "hci annotations principles heuristics labels", action: "annotations" });
   add({ section: "settings", id: "shortcuts", title: "Keyboard shortcuts", meta: "Press ?", text: "keyboard shortcuts keys help", action: "help" });
 
   return out;

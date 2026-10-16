@@ -10,11 +10,11 @@ export function Experience() {
       <SectionBand id="experience" title="Experience">
         Internships and work, with what I did.
       </SectionBand>
-      <div className="rows">
+      <div className="exp-list">
         {profile.experience.map((e, i) => {
           const [first, ...rest] = e.bullets;
           return (
-            <Card key={e.id} id={e.id} plain className="exp-row" aria-labelledby={`${e.id}-h`}>
+            <Card key={e.id} id={e.id} spotlight className="exp-row" aria-labelledby={`${e.id}-h`}>
               <p className="exp-when">
                 <span>{formatMonth(e.start)}</span>
                 <span className="exp-dash" aria-hidden="true">↓</span>
@@ -30,7 +30,7 @@ export function Experience() {
                   <li>{first}</li>
                 </ul>
                 {rest.length > 0 && (
-                  <Disclosure id={e.id} label={`Show ${rest.length} more`} openLabel="Show less" annotate={i === 0}>
+                  <Disclosure id={e.id} label={`Show ${rest.length} more`} openLabel="Show less">
                     <ul className="row-bullets">
                       {rest.map((b) => (
                         <li key={b}>{b}</li>
@@ -38,12 +38,11 @@ export function Experience() {
                     </ul>
                   </Disclosure>
                 )}
-                <p className="tag-words">
-                  <span className="visually-hidden">Tags: </span>
+                <ul className="chips chips-sm" aria-label="Tags">
                   {e.tags.map((t) => (
-                    <span key={t}>#{t.replace(/\s+/g, "")}</span>
+                    <li key={t}>{t}</li>
                   ))}
-                </p>
+                </ul>
               </div>
             </Card>
           );

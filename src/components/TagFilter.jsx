@@ -1,5 +1,3 @@
-import { Annotation } from "./Annotation.jsx";
-
 // Multi-select tag chips. Empty selection means "All".
 export function TagFilter({ tags, selected, onChange, label }) {
   const toggle = (t) => onChange(selected.includes(t) ? selected.filter((x) => x !== t) : [...selected, t]);
@@ -15,7 +13,6 @@ export function TagFilter({ tags, selected, onChange, label }) {
           </button>
         ))}
       </div>
-      <Annotation id="filter" block />
     </div>
   );
 }

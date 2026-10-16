@@ -13,7 +13,8 @@ export function Education() {
       </SectionBand>
       <div className="edu-cols">
         {profile.education.map((e, i) => (
-          <Card key={e.id} id={e.id} plain className="edu-col" aria-labelledby={`${e.id}-h`}>
+          <Card key={e.id} id={e.id} spotlight className="edu-col" aria-labelledby={`${e.id}-h`}>
+            <span className="edu-num mono" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
             <p className="row-date">
               {e.start ? formatRange(e.start, e.end) : formatMonth(e.end)}
               {e.status && ` · ${e.status}`}
@@ -32,7 +33,7 @@ export function Education() {
               {e.board && <> · {e.board}</>}
             </p>
             {e.subjects && (
-              <Disclosure id={e.id} label="Show subject marks" openLabel="Hide subject marks" annotate={i === 1}>
+              <Disclosure id={e.id} label="Show subject marks" openLabel="Hide subject marks">
                 <table className="marks">
                   <caption className="visually-hidden">{e.degree} subject marks</caption>
                   <thead>

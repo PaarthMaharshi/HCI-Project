@@ -90,12 +90,10 @@
   --space-7: 3rem;
   --space-8: 5rem;
   --target: 2.75rem; /* 44px minimum touch target */
-  --header-h: 1rem; /* sticky top bar height (phones/tablets), used for scroll-margin */
+  --header-h: 4.5rem; /* sticky top bar height, used for scroll-margin */
+  --space-9: 7rem;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   font-size: 100%;
-}
-
-:root[data-text="large"] {
-  font-size: 125%;
 }
 
 /* Each section sets --accent so components pick up its colour. */
@@ -106,5 +104,14 @@
 [data-section="writing"] { --accent: var(--c-writing); }
 [data-section="social"] { --accent: var(--c-social); }
 [data-section="activities"] { --accent: var(--c-activities); }
-[data-section="lab"],
 [data-section="settings"] { --accent: var(--c-lab); }
+
+/* Helpers derived from the palette above (no new hues). */
+:root {
+  --bg-2: var(--side-bg);
+  --surface-3: color-mix(in srgb, var(--surface-2) 70%, var(--border));
+  --text-dim: var(--text-muted);
+  --border-2: var(--border);
+  --grid-line: color-mix(in srgb, var(--border) 45%, transparent);
+  --glow: color-mix(in srgb, var(--accent, var(--c-overview)) 35%, transparent);
+}

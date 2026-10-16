@@ -11,8 +11,8 @@ export function Activities() {
       <SectionBand id="activities" title="Activities & Achievements" band="Activities">
         Hackathons, programs and practice.
       </SectionBand>
-      <div className="rows">
-        {profile.activities.map((a) => {
+      <div className="rows act-list">
+        {profile.activities.map((a, i) => {
           const Icon = ICONS[a.id] ?? TrophyIcon;
           return (
             <Card key={a.id} id={a.id} plain className="act-row" aria-labelledby={`${a.id}-h`}>
@@ -20,9 +20,11 @@ export function Activities() {
                 <Icon />
               </span>
               <div>
+                <p className="act-kicker mono">{a.tags.join(" · ")}</p>
                 <h3 id={`${a.id}-h`} className="row-title">{a.title}</h3>
                 <p className="act-detail">{a.detail}</p>
               </div>
+              <span className="act-num mono" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
             </Card>
           );
         })}

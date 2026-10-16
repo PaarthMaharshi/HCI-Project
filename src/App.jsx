@@ -1,11 +1,13 @@
-import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { LAB, SECTIONS, profile } from "./data/profile.js";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { SECTIONS, profile } from "./data/profile.js";
 import { Sidebar } from "./components/Sidebar.jsx";
 import { KeyboardIcon } from "./components/Icons.jsx";
+import ClickSpark from "./components/reactbits/ClickSpark/ClickSpark.jsx";
 import { ShortcutHelp } from "./components/ShortcutHelp.jsx";
 import { ToastProvider } from "./components/Toast.jsx";
 import { PrefsContext, usePrefsState } from "./hooks/usePrefs.js";
 import { useHotkeys } from "./hooks/useHotkeys.js";
+import { useReducedMotion } from "./hooks/useReducedMotion.js";
 import { useScrollSpy } from "./hooks/useScrollSpy.js";
 import { buildIndex } from "./lib/search.js";
 import { formatMonth } from "./lib/format.js";
@@ -13,14 +15,10 @@ import { ViewContext } from "./view.js";
 import { ProfilePage } from "./pages/ProfilePage.jsx";
 import { matchesTags } from "./sections/Projects.jsx";
 
-// The Lab is only for facilitators, so it loads on demand.
-const LabPage = lazy(() => import("./pages/LabPage.jsx").then((m) => ({ default: m.LabPage })));
-
-const SETTING_TARGETS = { textSize: "ctl-text-size", theme: "ctl-theme", annotations: "ctl-annotations" };
+const SETTING_TARGETS = { theme: "ctl-theme" };
 const SECTION_IDS = SECTIONS.map((s) => s.id);
 
 const hashId = () => window.location.hash.slice(1);
-const pageFromHash = () => (hashId() === LAB.id ? "lab" : "profile");
 const reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // Scrolls to an element, moves focus to it and flashes a highlight ring.
@@ -37,20 +35,18 @@ function flash(elementId, { block = "center", ring = true } = {}) {
   setTimeout(() => el.classList.remove("is-highlighted"), 2200);
 }
 
-function Footer({ page, onHelp }) {
+function Footer({ onHelp }) {
   return (
     <footer className="site-footer">
       <div className="container">
-        <span>© {profile.basics.name} · Last updated {formatMonth(profile.lastUpdated)}</span>
+        <span className="footer-id">
+          <span className="brand-mark" aria-hidden="true">{profile.basics.initials}</span>
+          <span className="mono">© {profile.basics.name} · Last updated {formatMonth(profile.lastUpdated)}</span>
+        </span>
         <span className="footer-actions">
           <button type="button" className="btn btn-ghost" onClick={onHelp}>
             <KeyboardIcon /> Keyboard shortcuts <kbd aria-hidden="true">?</kbd>
           </button>
-          {page === "lab" ? (
-            <a className="btn btn-ghost" href="#overview">← Back to profile</a>
-          ) : (
-            <a className="btn btn-ghost" href={`#${LAB.id}`}>Usability Lab <kbd aria-hidden="true">{LAB.key}</kbd></a>
-          )}
         </span>
       </div>
     </footer>
@@ -59,40 +55,33 @@ function Footer({ page, onHelp }) {
 
 export default function App() {
   const prefs = usePrefsState();
-  const [page, setPage] = useState(pageFromHash);
+  const reduce = useReducedMotion();
   const [openIds, setOpenIds] = useState(() => new Set());
   const [projectTags, setProjectTags] = useState([]);
   const [helpOpen, setHelpOpen] = useState(false);
   const [pending, setPending] = useState(null);
   const searchRef = useRef();
   const index = useMemo(() => buildIndex(profile), []);
-  const [active, setActive] = useScrollSpy(SECTION_IDS, page === "profile");
+  const [active, setActive] = useScrollSpy(SECTION_IDS, true);
 
-  // #lab switches to the Lab view; any other hash is a section of the profile.
+  // A section hash (on load or Back/Forward) scrolls to that section.
   useEffect(() => {
     const onHash = () => {
-      const next = pageFromHash();
-      setPage(next);
-      if (next === "profile" && SECTION_IDS.includes(hashId())) setPending({ el: hashId(), block: "start", ring: false, n: Date.now() });
-      if (next === "lab") window.scrollTo(0, 0);
+      if (SECTION_IDS.includes(hashId())) setPending({ el: hashId(), block: "start", ring: false, n: Date.now() });
     };
     window.addEventListener("hashchange", onHash);
-    if (SECTION_IDS.includes(hashId()) && hashId() !== "overview") setPending({ el: hashId(), block: "start", ring: false, n: Date.now() });
+    if (SECTION_IDS.includes(hashId()) && hashId() !== "overview") onHash();
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
-  useEffect(() => {
-    document.title = page === "lab" ? `${LAB.label} · ${profile.basics.name}` : profile.basics.name;
-  }, [page]);
-
   // Keep the address bar in step with the section on screen, without adding history entries.
   useEffect(() => {
-    if (page !== "profile" || !active || hashId() === active) return;
+    if (!active || hashId() === active) return;
     if (!hashId() && active === "overview") return;
     history.replaceState(null, "", `#${active}`);
-  }, [active, page]);
+  }, [active]);
 
-  // Act after React has rendered the target (opened disclosure, cleared filter, switched page).
+  // Act after React has rendered the target (opened disclosure, cleared filter).
   useEffect(() => {
     if (!pending) return;
     const id = requestAnimationFrame(() => flash(pending.el, pending));
@@ -102,7 +91,6 @@ export default function App() {
   // Jump to a section (pushes history so Back returns), or to a specific element in it.
   const goTo = useCallback((section, { target } = {}) => {
     if (hashId() !== section) history.pushState(null, "", `#${section}`);
-    setPage("profile");
     setActive(section);
     setPending(target ? { el: target, n: Date.now() } : { el: section, block: "start", ring: false, n: Date.now() });
   }, [setActive]);
@@ -143,11 +131,8 @@ export default function App() {
     searchRef.current?.focus({ preventScroll: true });
   }, []);
 
-  const hotkeys = { "?": () => setHelpOpen(true), [LAB.key]: () => { window.location.hash = LAB.id; } };
-  if (page === "profile") {
-    hotkeys["/"] = () => searchRef.current?.focus();
-    for (const s of SECTIONS) hotkeys[s.key] = () => goTo(s.id);
-  }
+  const hotkeys = { "?": () => setHelpOpen(true), "/": () => searchRef.current?.focus() };
+  for (const s of SECTIONS) hotkeys[s.key] = () => goTo(s.id);
   useHotkeys(hotkeys);
 
   const view = { active, goTo, openIds, toggleOpen, projectTags, setProjectTags, reveal };
@@ -159,22 +144,15 @@ export default function App() {
           <a className="skip-link" href="#main" onClick={(e) => { e.preventDefault(); document.getElementById("main")?.focus(); }}>
             Skip to content
           </a>
-          {page === "lab" ? (
-            <>
-              <Suspense fallback={<p className="container lab-main">Loading the Usability Lab…</p>}>
-                <LabPage />
-              </Suspense>
-              <Footer page={page} onHelp={() => setHelpOpen(true)} />
-            </>
-          ) : (
+          <ClickSpark disabled={reduce} sparkColor={prefs.theme === "dark" ? "#fdba74" : "#c2410c"} sparkSize={9} sparkRadius={18} sparkCount={8} duration={420}>
             <div className="layout">
               <Sidebar ref={searchRef} index={index} onSelect={onSelect} active={active} onNav={goTo} onHelp={() => setHelpOpen(true)} />
               <div className="content">
                 <ProfilePage active={active} onNav={goTo} onSearch={focusSearch} />
-                <Footer page={page} onHelp={() => setHelpOpen(true)} />
+                <Footer onHelp={() => setHelpOpen(true)} />
               </div>
             </div>
-          )}
+          </ClickSpark>
           <ShortcutHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
         </ToastProvider>
       </ViewContext.Provider>

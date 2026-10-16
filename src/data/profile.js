@@ -199,6 +199,3 @@ export const SECTIONS = [
   { id: "writing", label: "Writing", key: "6" },
   { id: "social", label: "Social", key: "7" },
 ];
-
-// The Usability Lab is a separate view (#lab) for the test facilitator.
-export const LAB = { id: "lab", label: "Usability Lab", key: "8" };

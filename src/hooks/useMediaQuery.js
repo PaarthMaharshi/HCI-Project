@@ -12,5 +12,5 @@ export function useMediaQuery(query) {
   return matches;
 }
 
-export const DESKTOP = "(min-width: 64rem)";
+export const DESKTOP = "(min-width: 75rem)";
 export const PHONE = "(max-width: 47.99rem)";

@@ -1,123 +1,165 @@
-import { forwardRef, useEffect, useRef, useState } from "react";
-import { LAB, SECTIONS, profile } from "../data/profile.js";
+import { forwardRef, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { SECTIONS, profile } from "../data/profile.js";
 import { DESKTOP, useMediaQuery } from "../hooks/useMediaQuery.js";
 import { usePrefs } from "../hooks/usePrefs.js";
+import { useReducedMotion } from "../hooks/useReducedMotion.js";
 import { useScrollProgress } from "../hooks/useScrollProgress.js";
-import { Annotation } from "./Annotation.jsx";
-import { InfoIcon, KeyboardIcon, MoonIcon, SunIcon, TextIcon } from "./Icons.jsx";
-import { Shiny } from "./Motion.jsx";
+import { KeyboardIcon, MailIcon, MoonIcon, SunIcon } from "./Icons.jsx";
+import Magnet from "./reactbits/Magnet/Magnet.jsx";
+import StarBorder from "./reactbits/StarBorder/StarBorder.jsx";
 import { SearchBox } from "./SearchBox.jsx";
 
-export function TextSizeButton() {
+function ThemeButton({ withLabel = false }) {
   const p = usePrefs();
+  const next = p.theme === "dark" ? "Light" : "Dark";
   return (
-    <button id="ctl-text-size" type="button" className="tool-btn toggle" aria-pressed={p.largeText} onClick={p.toggleLargeText}>
-      <TextIcon />
-      <span className="tool-label">Larger text</span>
+    <button
+      id="ctl-theme"
+      type="button"
+      className={`icon-btn${withLabel ? " has-label" : ""}`}
+      data-tip={`${next} theme`}
+      onClick={p.toggleTheme}
+      aria-label={`Switch to ${next.toLowerCase()} theme`}
+    >
+      <span className="theme-swap" key={p.theme}>{p.theme === "dark" ? <SunIcon /> : <MoonIcon />}</span>
+      {withLabel && <span aria-hidden="true">{next} theme</span>}
     </button>
   );
 }
 
-// Settings. The text-size button can be left out where it is shown elsewhere (phone top bar).
-export function Tools({ textSize = true }) {
-  const p = usePrefs();
-  return (
-    <div className="tools">
-      {textSize && (
-        <>
-          <TextSizeButton />
-          <Annotation id="textSize" />
-        </>
-      )}
-      <button
-        id="ctl-theme"
-        type="button"
-        className="tool-btn"
-        onClick={p.toggleTheme}
-        aria-label={p.theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
-      >
-        {p.theme === "dark" ? <SunIcon /> : <MoonIcon />}
-        <span className="tool-label" aria-hidden="true">{p.theme === "dark" ? "Light theme" : "Dark theme"}</span>
-      </button>
-      <Annotation id="theme" />
-      <button id="ctl-annotations" type="button" className="tool-btn toggle" aria-pressed={p.annotations} onClick={p.toggleAnnotations}>
-        <InfoIcon />
-        <span className="tool-label">HCI notes</span>
-        <span className="visually-hidden"> (show labels for design principles)</span>
-      </button>
-      <Annotation id="annotations" />
-    </div>
-  );
-}
-
-function Identity({ onNav }) {
+function Brand({ onNav, showName = false }) {
   const b = profile.basics;
   return (
-    <div className="side-id">
-      <a className="side-avatar" href="#overview" onClick={(e) => { e.preventDefault(); onNav("overview"); }}>
-        <span aria-hidden="true">{b.initials}</span>
-        <span className="visually-hidden">{b.name}, back to top</span>
-      </a>
-      <div>
-        <p className="side-name">{b.name}</p>
-        <p className="side-tagline">{b.tagline}</p>
-      </div>
-      <p className="side-status">
-        <span className="status-dot" aria-hidden="true" />
-        <Shiny>{b.availability}</Shiny>
-      </p>
-    </div>
+    <a className="nav-brand" href="#overview" onClick={(e) => { e.preventDefault(); onNav("overview"); }}>
+      <span className="brand-mark" aria-hidden="true">{b.initials}</span>
+      <span className={showName ? "brand-name" : "visually-hidden"}>{b.name}</span>
+      <span className="visually-hidden">, back to top</span>
+    </a>
   );
 }
 
-// Numbered section list with scroll-spy and a progress rail.
-function NavList({ active, onNav }) {
-  const progress = useScrollProgress();
+// "Say hi" pill with react-bits StarBorder; jumps to the copy-email button.
+function ContactCta({ onNav, className = "" }) {
+  const { theme } = usePrefs();
   return (
-    <nav className="side-nav" aria-label="Sections">
-      <div className="side-rail" aria-hidden="true">
-        <span className="side-rail-fill" style={{ transform: `scaleY(${progress})` }} />
+    <StarBorder
+      as="a"
+      href="#overview"
+      className={`nav-cta ${className}`}
+      color={theme === "dark" ? "#fdba74" : "#c2410c"}
+      speed="5s"
+      onClick={(e) => { e.preventDefault(); onNav("overview", { target: "ctl-copy-email" }); }}
+    >
+      <MailIcon /> Say hi
+    </StarBorder>
+  );
+}
+
+// Section links. A tinted pill slides to the active link (scroll-spy) and
+// follows the pointer while hovering, in that section's colour.
+function NavLinks({ active, onNav }) {
+  const listRef = useRef();
+  const links = useRef({});
+  const [hover, setHover] = useState(null);
+  const [pill, setPill] = useState({ x: 0, w: 0, ready: false });
+  const shown = hover ?? active;
+
+  const measure = useCallback(() => {
+    const el = links.current[shown];
+    if (!el || !listRef.current) return;
+    const base = listRef.current.getBoundingClientRect().left;
+    const r = el.getBoundingClientRect();
+    setPill({ x: r.left - base, w: r.width, ready: true });
+  }, [shown]);
+
+  useLayoutEffect(measure, [measure]);
+  useEffect(() => {
+    window.addEventListener("resize", measure);
+    document.fonts?.ready.then(measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [measure]);
+
+  return (
+    <nav className="nav-links" aria-label="Sections">
+      <div className="nav-track" ref={listRef} onMouseLeave={() => setHover(null)}>
+        <span
+          className="nav-pill"
+          aria-hidden="true"
+          style={{ transform: `translateX(${pill.x}px)`, width: pill.w, opacity: pill.ready ? 1 : 0, "--pill": `var(--c-${shown})` }}
+        />
+        <ul>
+          {SECTIONS.map((s) => (
+            <li key={s.id}>
+              <a
+                ref={(el) => (links.current[s.id] = el)}
+                href={`#${s.id}`}
+                aria-current={active === s.id ? "true" : undefined}
+                onMouseEnter={() => setHover(s.id)}
+                onClick={(e) => { e.preventDefault(); onNav(s.id); }}
+              >
+                {s.label}
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
-      <ul>
-        {SECTIONS.map((s) => (
-          <li key={s.id} data-section={s.id}>
-            <a href={`#${s.id}`} aria-current={active === s.id ? "true" : undefined} onClick={(e) => { e.preventDefault(); onNav(s.id); }}>
-              <span className="side-num" aria-hidden="true">{s.key.padStart(2, "0")}</span>
-              {s.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-      <Annotation id="tabs" />
     </nav>
   );
 }
 
-function SideLinks({ onHelp }) {
+function ScrollBar() {
+  const progress = useScrollProgress();
   return (
-    <div className="side-links">
-      <button type="button" className="side-link" onClick={onHelp}>
-        <KeyboardIcon /> Shortcuts <kbd aria-hidden="true">?</kbd>
-      </button>
-      <a className="side-link" href={`#${LAB.id}`}>
-        {LAB.label} <kbd aria-hidden="true">{LAB.key}</kbd>
-      </a>
+    <div className="nav-progress" aria-hidden="true">
+      <span style={{ transform: `scaleX(${progress})` }} />
     </div>
+  );
+}
+
+// The bar gets a stronger glass backdrop once the page has scrolled.
+function useScrolled() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const on = () => setScrolled(window.scrollY > 8);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
+  return scrolled;
+}
+
+// Drawer list: a colour dot per section, the active one filled and glowing.
+function DrawerNav({ active, onNav }) {
+  return (
+    <nav className="drawer-nav" aria-label="Sections">
+      <ul>
+        {SECTIONS.map((s, i) => (
+          <li key={s.id} style={{ "--i": i, "--dot": `var(--c-${s.id})` }}>
+            <a href={`#${s.id}`} aria-current={active === s.id ? "true" : undefined} onClick={(e) => { e.preventDefault(); onNav(s.id); }}>
+              <span className="drawer-dot" aria-hidden="true" />
+              {s.label}
+              <kbd aria-hidden="true">{s.key}</kbd>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }
 
 function MenuIcon() {
   return (
     <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true" focusable="false">
-      <path d="M4 7h16M4 12h16M4 17h10" />
+      <path d="M4 8h16M4 16h10" />
     </svg>
   );
 }
 
-// Phone/tablet: slim top bar + the sidebar contents in a left drawer (<dialog>).
+// Phone/tablet: one slim floating bar + the navigation in a floating drawer (<dialog>).
 function MobileBar({ index, onSelect, active, onNav, onHelp, searchRef }) {
   const [open, setOpen] = useState(false);
   const dialogRef = useRef();
+  const scrolled = useScrolled();
 
   useEffect(() => {
     const d = dialogRef.current;
@@ -132,28 +174,36 @@ function MobileBar({ index, onSelect, active, onNav, onHelp, searchRef }) {
 
   return (
     <>
-      <header className="topbar">
-        <div className="topbar-row">
-          <button type="button" className="tool-btn" aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(true)}>
+      <header className={`topbar${scrolled ? " is-scrolled" : ""}`}>
+        <div className="bar-shell topbar-row">
+          <button type="button" className="icon-btn" aria-label="Menu" aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(true)}>
             <MenuIcon />
-            <span className="tool-label">Menu</span>
           </button>
-          <a className="topbar-brand" href="#overview" onClick={(e) => { e.preventDefault(); onNav("overview"); }}>
-            <span className="brand-mark" aria-hidden="true">{profile.basics.initials}</span>
-            {profile.basics.name}
-          </a>
-          <TextSizeButton />
+          <Brand onNav={onNav} />
+          <SearchBox ref={searchRef} index={index} onSelect={onSelect} placeholder="Search…" />
+          <ThemeButton />
+          <ScrollBar />
         </div>
-        <SearchBox ref={searchRef} index={index} onSelect={onSelect} />
       </header>
       <dialog ref={dialogRef} className="drawer" aria-label="Menu" onClose={() => setOpen(false)} onClick={(e) => { if (e.target === dialogRef.current) setOpen(false); }}>
         <div className="drawer-inner">
-          <button type="button" className="tool-btn drawer-close" onClick={() => setOpen(false)} aria-label="Close menu">✕</button>
-          <Identity onNav={navAndClose} />
-          <NavList active={active} onNav={navAndClose} />
-          <div className="side-bottom">
-            <Tools textSize={false} />
-            <SideLinks onHelp={() => { setOpen(false); onHelp(); }} />
+          <div className="drawer-top">
+            <Brand onNav={navAndClose} showName />
+            <button type="button" className="icon-btn drawer-close" onClick={() => setOpen(false)} aria-label="Close menu">✕</button>
+          </div>
+          <p className="side-status">
+            <span className="status-dot" aria-hidden="true" />
+            {profile.basics.availability}
+          </p>
+          <DrawerNav active={active} onNav={navAndClose} />
+          <div className="drawer-bottom">
+            <ContactCta onNav={navAndClose} className="drawer-cta" />
+            <div className="drawer-tools">
+              <ThemeButton withLabel />
+              <button type="button" className="icon-btn has-label" onClick={() => { setOpen(false); onHelp(); }}>
+                <KeyboardIcon /> Shortcuts
+              </button>
+            </div>
           </div>
         </div>
       </dialog>
@@ -163,21 +213,26 @@ function MobileBar({ index, onSelect, active, onNav, onHelp, searchRef }) {
 
 export const Sidebar = forwardRef(function Sidebar({ index, onSelect, active, onNav, onHelp }, searchRef) {
   const desktop = useMediaQuery(DESKTOP);
+  const scrolled = useScrolled();
+  const reduce = useReducedMotion();
   if (!desktop) return <MobileBar index={index} onSelect={onSelect} active={active} onNav={onNav} onHelp={onHelp} searchRef={searchRef} />;
   return (
-    <aside className="sidebar" aria-label="Profile navigation">
-      <div className="side-glow" aria-hidden="true" />
-      <Identity onNav={onNav} />
-      <div className="side-search">
-        <SearchBox ref={searchRef} index={index} onSelect={onSelect} placeholder="Search everything" />
-        <Annotation id="search" />
+    <header className={`nav${scrolled ? " is-scrolled" : ""}`}>
+      <div className="bar-shell nav-row">
+        <Magnet padding={30} magnetStrength={4} disabled={reduce}>
+          <Brand onNav={onNav} />
+        </Magnet>
+        <NavLinks active={active} onNav={onNav} />
+        <span className="nav-sep" aria-hidden="true" />
+        <div className="nav-search">
+          <SearchBox ref={searchRef} index={index} onSelect={onSelect} placeholder="Search" />
+        </div>
+        <Magnet padding={24} magnetStrength={4} disabled={reduce}>
+          <ThemeButton />
+        </Magnet>
+        <ContactCta onNav={onNav} />
+        <ScrollBar />
       </div>
-      <NavList active={active} onNav={onNav} />
-      <div className="side-bottom">
-        <Tools />
-        <SideLinks onHelp={onHelp} />
-      </div>
-      <Annotation id="sidebar" />
-    </aside>
+    </header>
   );
 });

@@ -3,6 +3,7 @@ import { Card } from "../components/Card.jsx";
 import { Disclosure } from "../components/Disclosure.jsx";
 import { EmptyState } from "../components/EmptyState.jsx";
 import { CodeIcon, ExternalIcon } from "../components/Icons.jsx";
+import { ProjectVisual } from "../components/ProjectVisual.jsx";
 import { SectionBand } from "../components/SectionBand.jsx";
 import { TagFilter } from "../components/TagFilter.jsx";
 import { formatRange } from "../lib/format.js";
@@ -22,11 +23,14 @@ export function Projects() {
       <SectionBand id="projects" title="Projects">
         Filter by tag, then open a project for details.
       </SectionBand>
-      <TagFilter tags={PROJECT_TAGS} selected={projectTags} onChange={setProjectTags} label="Filter projects by tag" />
-      <p className="filter-status" role="status">
-        Showing {shown.length} of {total} projects
-        {projectTags.length > 0 && <> tagged {projectTags.join(" or ")}</>}
-      </p>
+      <div className="filter-row">
+        <p className="filter-status mono" role="status">
+          <span className="status-dot" aria-hidden="true" />
+          Showing {shown.length} of {total} projects
+          {projectTags.length > 0 && <> tagged {projectTags.join(" or ")}</>}
+        </p>
+        <TagFilter tags={PROJECT_TAGS} selected={projectTags} onChange={setProjectTags} label="Filter projects by tag" />
+      </div>
 
       {shown.length === 0 ? (
         <EmptyState
@@ -41,43 +45,48 @@ export function Projects() {
           Try removing a tag, or show all projects.
         </EmptyState>
       ) : (
-        <div className="rows">
+        <div className="proj-grid">
           {shown.map((p, i) => (
-            <Card key={p.id} id={p.id} spotlight className="proj-row" aria-labelledby={`${p.id}-h`}>
-              <span className="proj-index" aria-hidden="true">
-                {String(profile.projects.indexOf(p) + 1).padStart(2, "0")}
-              </span>
+            <Card key={p.id} id={p.id} spotlight className="proj-card" aria-labelledby={`${p.id}-h`}>
+              <ProjectVisual id={p.id} />
               <div className="proj-body">
+                <div className="proj-meta mono">
+                  <span className="proj-kind">{p.tags[0]}</span>
+                  <span>{formatRange(p.start, p.end)}</span>
+                </div>
                 <div className="proj-head">
                   <h3 id={`${p.id}-h`} className="row-title">{p.title}</h3>
-                  <span className="row-date">{formatRange(p.start, p.end)}</span>
+                  <span className="proj-index mono" aria-hidden="true">
+                    {String(profile.projects.indexOf(p) + 1).padStart(2, "0")}
+                  </span>
                 </div>
                 <p className="proj-summary">{p.summary}</p>
-                <p className="tag-words">
-                  <span className="visually-hidden">Tags: </span>
+                <ul className="chips chips-sm" aria-label="Tags">
                   {p.tags.map((t) => (
-                    <span key={t}>#{t.replace(/[\s/]+/g, "")}</span>
+                    <li key={t}>{t}</li>
                   ))}
-                </p>
-                <Disclosure id={p.id} label="Details, tech stack & link" openLabel="Hide details" annotate={i === 0}>
-                  <ul className="row-bullets">
-                    {p.bullets.map((b) => (
-                      <li key={b}>{b}</li>
-                    ))}
-                  </ul>
-                  <p className="mini-label" style={{ marginTop: "var(--space-4)" }}>Tech stack</p>
-                  <ul className="slash-list" aria-label="Tech stack">
-                    {p.stack.map((s) => (
-                      <li key={s}>{s}</li>
-                    ))}
-                  </ul>
-                  <p style={{ marginTop: "var(--space-4)", marginBottom: 0 }}>
-                    <a className="arrow-link" href={p.link} target="_blank" rel="noreferrer">
-                      View on GitHub <ExternalIcon />
-                      <span className="visually-hidden"> (opens in a new tab)</span>
-                    </a>
-                  </p>
-                </Disclosure>
+                </ul>
+                <div className="proj-foot">
+                  <Disclosure id={p.id} label="Details, tech stack & link" openLabel="Hide details">
+                    <ul className="row-bullets">
+                      {p.bullets.map((b) => (
+                        <li key={b}>{b}</li>
+                      ))}
+                    </ul>
+                    <p className="mini-label" style={{ marginTop: "var(--space-4)" }}>Tech stack</p>
+                    <ul className="chips chips-sm" aria-label="Tech stack">
+                      {p.stack.map((s) => (
+                        <li key={s}>{s}</li>
+                      ))}
+                    </ul>
+                    <p style={{ marginTop: "var(--space-4)", marginBottom: 0 }}>
+                      <a className="arrow-link" href={p.link} target="_blank" rel="noreferrer">
+                        View on GitHub <ExternalIcon />
+                        <span className="visually-hidden"> (opens in a new tab)</span>
+                      </a>
+                    </p>
+                  </Disclosure>
+                </div>
               </div>
             </Card>
           ))}

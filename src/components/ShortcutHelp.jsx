@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
-import { LAB, SECTIONS } from "../data/profile.js";
-import { Annotation } from "./Annotation.jsx";
+import { SECTIONS } from "../data/profile.js";
 
 // Native <dialog>: focus is trapped and Esc closes it for free.
 export function ShortcutHelp({ open, onClose }) {
@@ -13,7 +12,6 @@ export function ShortcutHelp({ open, onClose }) {
   return (
     <dialog ref={ref} onClose={onClose} aria-labelledby="help-title">
       <h2 id="help-title">Keyboard shortcuts</h2>
-      <Annotation id="help" block />
       <dl className="shortcut-list">
         <dt><kbd>/</kbd></dt>
         <dd>Search everything</dd>
@@ -23,8 +21,6 @@ export function ShortcutHelp({ open, onClose }) {
         <dd>Close search or this panel</dd>
         <dt><kbd>1</kbd>–<kbd>7</kbd></dt>
         <dd>Jump to a section: {SECTIONS.map((s) => `${s.key} ${s.label}`).join(" · ")}</dd>
-        <dt><kbd>{LAB.key}</kbd></dt>
-        <dd>Open the {LAB.label} (for test facilitators)</dd>
         <dt><kbd>?</kbd></dt>
         <dd>Show this panel</dd>
       </dl>
