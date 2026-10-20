@@ -60,9 +60,11 @@ const INK = {
 };
 
 // Text with a slow shine sweep. Both colours pass contrast on their own, so it stays readable mid-sweep.
-export function Shiny({ children }) {
+// `tone` forces a palette (e.g. "dark" inside the inverted ink band).
+export function Shiny({ children, tone }) {
   const reduce = useReducedMotion();
-  const { theme } = usePrefs();
+  const prefs = usePrefs();
+  const theme = tone ?? prefs.theme;
   if (reduce) return <span>{children}</span>;
   return (
     <ShinyText key={theme} color={INK[theme].text} shineColor={INK[theme].shine} speed={3} delay={1.5} shineWidth={30}>

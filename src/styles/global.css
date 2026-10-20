@@ -1021,8 +1021,10 @@ dialog::backdrop { background: rgb(0 0 0 / 0.6); backdrop-filter: blur(4px); }
 
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation: none !important; transition: none !important; }
+  :root:not([data-motion="on"]) { scroll-behavior: auto; }
+  :root:not([data-motion="on"]) *,
+  :root:not([data-motion="on"]) *::before,
+  :root:not([data-motion="on"]) *::after { animation: none !important; transition: none !important; }
 }
 
 /* Forced colours (Windows High Contrast): keep state and decoration visible. */
