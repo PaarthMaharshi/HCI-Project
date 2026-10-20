@@ -700,7 +700,7 @@ mark { background: var(--mark-bg); color: var(--mark-text); border-radius: 0.2re
 
 /* Experience */
 .exp-list { display: grid; gap: var(--space-4); }
-.exp-row { display: grid; grid-template-columns: 11rem 1fr; gap: var(--space-6); padding: var(--space-6); }
+.item.tile.exp-row, .exp-row { display: grid; grid-template-columns: 11rem 1fr; gap: var(--space-6); padding: var(--space-6); }
 .exp-when { display: flex; flex-direction: column; margin: 0; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 500; line-height: 1.5; color: var(--accent, var(--c-overview)); letter-spacing: 0.04em; text-transform: uppercase; }
 .exp-dash { font-size: 0.85rem; color: var(--text-dim); margin: 0.1rem 0; }
 .exp-row .row-title { font-size: 1.6rem; }
@@ -861,7 +861,7 @@ mark { background: var(--mark-bg); color: var(--mark-text); border-radius: 0.2re
 
 /* Education: tiles */
 .edu-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
-.edu-col { padding: var(--space-5); }
+.item.tile.edu-col, .edu-col { padding: var(--space-5); }
 .edu-num { position: absolute; top: var(--space-5); right: var(--space-5); font-size: 0.7rem; color: var(--text-dim); }
 .score {
   display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--space-2);
@@ -1002,7 +1002,7 @@ dialog::backdrop { background: rgb(0 0 0 / 0.6); backdrop-filter: blur(4px); }
   .stat-num { font-size: 2.4rem; }
   .panel { padding: var(--space-5); }
   .skill-row { grid-template-columns: 1fr; gap: var(--space-2); }
-  .exp-row { grid-template-columns: 1fr; gap: var(--space-2); padding: var(--space-5); }
+  .item.tile.exp-row { grid-template-columns: 1fr; gap: var(--space-2); padding: var(--space-5); }
   .exp-when { flex-direction: row; gap: var(--space-2); }
   .exp-dash { margin: 0; transform: rotate(-90deg); }
   .proj-grid { grid-template-columns: 1fr; }
@@ -1021,8 +1021,10 @@ dialog::backdrop { background: rgb(0 0 0 / 0.6); backdrop-filter: blur(4px); }
 
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation: none !important; transition: none !important; }
+  :root:not([data-motion="on"]) { scroll-behavior: auto; }
+  :root:not([data-motion="on"]) *,
+  :root:not([data-motion="on"]) *::before,
+  :root:not([data-motion="on"]) *::after { animation: none !important; transition: none !important; }
 }
 
 /* Forced colours (Windows High Contrast): keep state and decoration visible. */

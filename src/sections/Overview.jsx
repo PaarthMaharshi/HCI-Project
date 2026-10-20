@@ -2,31 +2,28 @@ import { profile } from "../data/profile.js";
 import { CopyButton } from "../components/CopyButton.jsx";
 import { PinIcon } from "../components/Icons.jsx";
 import { BlurHeading, Count, Gradient, Reveal, Shiny } from "../components/Motion.jsx";
-import Aurora from "../components/reactbits/Aurora/Aurora.jsx";
 import SpotlightCard from "../components/reactbits/SpotlightCard/SpotlightCard.jsx";
-import { usePrefs } from "../hooks/usePrefs.js";
+import { HeroScene, useParallax } from "../components/tech/HeroScene.jsx";
+import { InkFlood } from "../components/tech/InkFlood.jsx";
+import { Robot } from "../components/tech/Robot.jsx";
 import { formatMonth } from "../lib/format.js";
+import { useRef } from "react";
 import { useView } from "../view.js";
 
-// Aurora parses colours in JS, so it gets hex stops per theme.
-const AURORA = {
-  light: ["#ffb38a", "#ff8fa3", "#7ee3c9"],
-  dark: ["#9a3412", "#9f1239", "#115e59"],
-};
-
 // Side card: what Paarth is doing right now, built from the profile data.
+// It sits inside the ink band, which always uses the dark palette.
 function NowCard() {
-  const { theme } = usePrefs();
+  const theme = "dark";
   const b = profile.basics;
   const latest = profile.experience[0];
   return (
     <SpotlightCard
       theme={theme}
-      spotlightColor="var(--c-overview)"
+      spotlightColor="var(--accent)"
       intensity={0.5}
       borderGlow={0.8}
-      className="now-card fade-up"
-      style={{ "--d": "0.5s", "--spotlight-card-surface": "var(--hero-panel)", "--spotlight-card-border": "var(--border)", "--spotlight-card-shadow": "var(--shadow)" }}
+      className="now-card"
+      style={{ "--spotlight-card-surface": "var(--hero-panel)", "--spotlight-card-border": "var(--border)", "--spotlight-card-shadow": "var(--shadow)" }}
     >
       <div className="now-id">
         <span className="now-avatar" aria-hidden="true">{b.initials}</span>
@@ -37,7 +34,7 @@ function NowCard() {
       </div>
       <p className="now-status">
         <span className="status-dot" aria-hidden="true" />
-        <Shiny>{b.availability}</Shiny>
+        <Shiny tone="dark">{b.availability}</Shiny>
       </p>
       <dl className="now-list">
         <div>
@@ -59,20 +56,18 @@ function NowCard() {
 
 function Hero() {
   const b = profile.basics;
-  const { theme } = usePrefs();
   const { goTo } = useView();
+  const ref = useRef();
+  useParallax(ref);
   return (
-    <div className="hero">
-      <div className="hero-bg" aria-hidden="true">
-        <Aurora key={theme} colorStops={AURORA[theme]} lightMode={theme === "light"} amplitude={1.1} blend={0.6} speed={0.6} />
-      </div>
-      <div className="hero-veil" aria-hidden="true" />
+    <div className="hero" ref={ref}>
+      <HeroScene />
       <div className="container hero-inner">
         <div className="hero-copy">
           <p className="hero-hello">
             <Gradient>Hi, I’m</Gradient>
           </p>
-          <BlurHeading id="hero-name" text={b.name} className="hero-name" />
+          <BlurHeading id="hero-name" text={b.name} className="hero-name extruded" />
           <p className="headline fade-up" style={{ "--d": "0.4s" }}>{b.headline}</p>
           <p className="hero-location fade-up" style={{ "--d": "0.5s" }}>
             <PinIcon /> {b.location}
@@ -90,7 +85,9 @@ function Hero() {
             </a>
           </div>
         </div>
-        <NowCard />
+        <div className="par hero-robot" style={{ "--depth": 12 }}>
+          <Robot />
+        </div>
       </div>
 
       <div className="container">
@@ -111,49 +108,55 @@ function Hero() {
 function About() {
   const { reveal } = useView();
   return (
-    <div className="container about-grid">
-      <Reveal>
-        <section aria-labelledby="skills-h" className="about-col panel">
-          <p className="mini-label">What I work with</p>
-          <h2 id="skills-h" className="about-title">Skills</h2>
-          <dl className="skills">
-            {profile.skills.map((s) => (
-              <div className="skill-row" key={s.id} id={`item-${s.id}`} data-item="" tabIndex={-1}>
-                <dt>{s.group}</dt>
-                <dd>
-                  <ul className="chips" aria-label={s.group}>
-                    {s.items.map((i) => (
-                      <li key={i}>{i}</li>
-                    ))}
-                  </ul>
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-      </Reveal>
+    <InkFlood>
+      <div className="container about-grid">
+        <Reveal className="about-now">
+          <NowCard />
+        </Reveal>
 
-      <Reveal delay={0.1}>
-        <section aria-labelledby="timeline-h" className="about-col panel">
-          <p className="mini-label">Recently</p>
-          <h2 id="timeline-h" className="about-title">Timeline</h2>
-          <ol className="timeline">
-            {profile.timeline.map((t) => (
-              <li key={t.date + t.text}>
-                <time dateTime={t.date}>{formatMonth(t.date)}</time>
-                {t.ref ? (
-                  <button type="button" className="link-btn" onClick={() => reveal(t.ref.section, t.ref.id)}>
-                    {t.text}
-                  </button>
-                ) : (
-                  t.text
-                )}
-              </li>
-            ))}
-          </ol>
-        </section>
-      </Reveal>
-    </div>
+        <Reveal className="about-skills">
+          <section aria-labelledby="skills-h" className="about-col panel">
+            <p className="mini-label">What I work with</p>
+            <h2 id="skills-h" className="about-title">Skills</h2>
+            <dl className="skills">
+              {profile.skills.map((s) => (
+                <div className="skill-row" key={s.id} id={`item-${s.id}`} data-item="" tabIndex={-1}>
+                  <dt>{s.group}</dt>
+                  <dd>
+                    <ul className="chips" aria-label={s.group}>
+                      {s.items.map((i) => (
+                        <li key={i}>{i}</li>
+                      ))}
+                    </ul>
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        </Reveal>
+
+        <Reveal delay={0.1} className="about-timeline">
+          <section aria-labelledby="timeline-h" className="about-col panel">
+            <p className="mini-label">Recently</p>
+            <h2 id="timeline-h" className="about-title">Timeline</h2>
+            <ol className="timeline">
+              {profile.timeline.map((t) => (
+                <li key={t.date + t.text}>
+                  <time dateTime={t.date}>{formatMonth(t.date)}</time>
+                  {t.ref ? (
+                    <button type="button" className="link-btn" onClick={() => reveal(t.ref.section, t.ref.id)}>
+                      {t.text}
+                    </button>
+                  ) : (
+                    t.text
+                  )}
+                </li>
+              ))}
+            </ol>
+          </section>
+        </Reveal>
+      </div>
+    </InkFlood>
   );
 }
 

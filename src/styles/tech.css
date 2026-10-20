@@ -1,0 +1,258 @@
+/* "Explore the tech" layer: morphing ink blobs, a floating robot, mouse
+   parallax, an extruded display headline and the ink-flood takeover.
+   Built only from the existing palette (tokens.css); loaded after global.css. */
+
+:root,
+:root[data-theme="light"] {
+  --blob: #2b1d12;
+  --blob-stroke: transparent;
+  --blob-grid: rgb(255 248 238 / 0.1);
+  --blob-trace: rgb(253 186 116 / 0.55);
+  --blob-star: #fff8ee;
+  --ink-bg: #2b1d12;
+  --robot-body: #fffaf2;
+  --robot-line: #2b1d12;
+  --robot-screen: #2b1d12;
+  --robot-panel: #fbefdf;
+  --robot-eye: #5eead4;
+  --robot-hot: #fb923c;
+  --dot-grid: rgb(160 134 112 / 0.22);
+}
+:root[data-theme="dark"] {
+  --blob: #2a1f16;
+  --blob-stroke: rgb(253 186 116 / 0.22);
+  --blob-grid: rgb(253 186 116 / 0.07);
+  --blob-trace: rgb(253 186 116 / 0.5);
+  --blob-star: #fbf3ea;
+  --ink-bg: #2a1f16;
+  --robot-panel: #fde7cc;
+  --dot-grid: rgb(155 133 113 / 0.16);
+}
+:root { --font-display: "Bungee", var(--font-head); }
+
+/* Faint circuit-board dot grid behind the whole page. */
+body {
+  background-image: radial-gradient(var(--dot-grid) 1px, transparent 1.4px);
+  background-size: 24px 24px;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  min-height: min(100svh, 54rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-8) 0 var(--space-7);
+  overflow: visible;
+  overflow-x: clip; /* let the bottom blobs spill down instead of being cut flat */
+}
+.hero-inner { position: relative; z-index: 1; }
+@media (min-width: 62.01rem) { .hero-inner { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); } }
+.hero-copy { position: relative; }
+.hero .stats { position: relative; z-index: 1; }
+
+/* Extruded, outlined display name (the "EXPLORE THE SPACE" look). */
+.hero-name.extruded {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.5rem, 6.6vw, 5.2rem);
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  margin: var(--space-3) 0 var(--space-5);
+  color: var(--bg);
+  -webkit-text-stroke: 2px var(--text);
+  paint-order: stroke fill;
+  text-shadow:
+    1px 1px 0 var(--text), 2px 2px 0 var(--text), 3px 3px 0 var(--text),
+    4px 4px 0 var(--text), 5px 5px 0 var(--text), 6px 6px 0 var(--text),
+    7px 7px 0 var(--c-overview), 8px 8px 0 var(--c-overview), 9px 9px 0 var(--c-overview),
+    10px 10px 0 var(--text);
+}
+.hero-name.extruded .blur-text { flex-wrap: wrap; row-gap: 0.1em; }
+
+/* Scene behind the hero copy */
+.hero-scene { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.par {
+  position: absolute;
+  transform: translate3d(calc(var(--px, 0) * var(--depth, 0) * 1px), calc(var(--py, 0) * var(--depth, 0) * 1px), 0);
+  transition: transform 1s var(--ease-out);
+  will-change: transform;
+}
+.float-a { animation: float-a 6s ease-in-out infinite; }
+.float-b { animation: float-b 8s ease-in-out infinite; }
+.float-c { animation: float-c 5s ease-in-out infinite; }
+.float-slow { animation: float-slow 16s ease-in-out infinite; }
+@keyframes float-a { 0%, 100% { transform: translate(0, 0) rotate(-4deg); } 50% { transform: translate(8px, -16px) rotate(4deg); } }
+@keyframes float-b { 0%, 100% { transform: translate(0, 0) rotate(3deg); } 50% { transform: translate(-10px, 12px) rotate(-5deg); } }
+@keyframes float-c { 0%, 100% { transform: translateY(0) rotate(8deg); } 50% { transform: translateY(-12px) rotate(-6deg); } }
+@keyframes float-slow { 0%, 100% { transform: scale(1) rotate(0); } 50% { transform: scale(1.05) rotate(6deg); } }
+
+.blob { display: block; width: 100%; height: auto; overflow: visible; }
+.blob-fill { fill: var(--blob); stroke: var(--blob-stroke); stroke-width: 0.4; }
+.blob-grid { stroke: var(--blob-grid); stroke-width: 0.2; }
+.blob-trace { fill: none; stroke: var(--blob-trace); stroke-width: 0.5; stroke-linecap: round; stroke-dasharray: 3 2; animation: trace-flow 4s linear infinite; }
+.blob-node { fill: var(--robot-hot); animation: twinkle 2.4s ease-in-out infinite; }
+.blob-star { stroke: var(--blob-star); stroke-width: 0.45; stroke-linecap: round; animation: twinkle 3.2s ease-in-out infinite; }
+@keyframes trace-flow { to { stroke-dashoffset: -20; } }
+@keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+
+.blob-a { width: min(46vw, 640px); right: -9%; top: -16%; }
+.blob-b { width: min(15vw, 210px); left: -6%; top: 24%; }
+.blob-c { width: min(24vw, 340px); left: -11%; bottom: -24%; }
+.blob-d { width: min(30vw, 420px); right: -8%; bottom: -30%; }
+
+/* Small props drawn in the same line-art style as the robot */
+.prop svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 10px 14px rgb(43 29 18 / 0.18)); }
+.prop-planet { width: 190px; right: 4%; top: 8%; }
+.prop-drone { width: 104px; left: 1.5%; top: 31%; }
+.prop-chip { width: 78px; left: 4%; bottom: 9%; }
+.prop-gear-wrap { width: 62px; right: 30%; bottom: 7%; }
+.prop-gear { animation: spin 14s linear infinite; }
+.prop-rotor { transform-box: fill-box; transform-origin: center; animation: rotor 0.22s linear infinite; }
+.prop-beam { fill: color-mix(in srgb, var(--robot-eye) 35%, transparent); animation: twinkle 1.6s ease-in-out infinite; }
+.chip-text { font-family: var(--font-display); font-size: 17px; fill: var(--robot-eye); }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes rotor { 50% { transform: scaleX(0.25); } }
+
+.glyph span {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--c-overview);
+  padding: 0.15rem 0.5rem;
+  border: 1.5px solid currentColor;
+  border-radius: 0.5rem;
+  background: var(--bg);
+}
+.glyph-1 { left: 46%; top: 11%; }
+.glyph-2 { left: 58%; top: 21%; }
+.glyph-3 { right: 3%; top: 60%; }
+
+/* ---------- Robot ---------- */
+.hero-robot { position: relative; justify-self: center; width: min(100%, 330px); }
+.robot { position: relative; cursor: pointer; animation: robot-float 5s ease-in-out infinite; -webkit-tap-highlight-color: transparent; }
+.robot-svg { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(0 18px 24px rgb(43 29 18 / 0.22)); }
+.robot.is-happy .robot-svg { animation: robot-cheer 1.2s var(--ease-out); }
+.robot-shadow {
+  position: absolute; left: 50%; bottom: -1.5rem;
+  width: 46%; height: 0.9rem; margin-left: -23%;
+  border-radius: 50%;
+  background: radial-gradient(rgb(43 29 18 / 0.28), transparent 70%);
+  animation: robot-shadow 5s ease-in-out infinite;
+}
+@keyframes robot-float { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-18px) rotate(2deg); } }
+@keyframes robot-shadow { 0%, 100% { transform: scaleX(1); opacity: 1; } 50% { transform: scaleX(0.7) translateY(18px); opacity: 0.6; } }
+@keyframes robot-cheer { 0% { transform: rotate(0) scale(1); } 40% { transform: rotate(-12deg) scale(1.08) translateY(-12px); } 70% { transform: rotate(10deg) scale(1.04); } 100% { transform: rotate(0) scale(1); } }
+
+.r-body { fill: var(--robot-body); stroke: var(--robot-line); stroke-width: 4; stroke-linejoin: round; }
+.r-line { stroke: var(--robot-line); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.r-line.thin { stroke-width: 2.5; }
+.r-screen { fill: var(--robot-screen); stroke: var(--robot-line); stroke-width: 4; }
+.r-panel { fill: var(--robot-panel); stroke: var(--robot-line); stroke-width: 3; }
+.r-eye { fill: var(--robot-eye); filter: drop-shadow(0 0 4px var(--robot-eye)); }
+.r-eye-line { fill: none; stroke: var(--robot-eye); stroke-width: 4; stroke-linecap: round; }
+.r-cheek { fill: #fda4af; opacity: 0.8; }
+.r-glint { fill: none; stroke: rgb(255 255 255 / 0.35); stroke-width: 3; stroke-linecap: round; }
+.robot-bulb { fill: var(--robot-hot); stroke: var(--robot-line); stroke-width: 3; animation: bulb 1.8s ease-in-out infinite; }
+.robot-core { fill: var(--robot-hot); transform-box: fill-box; transform-origin: center; animation: core 2s ease-in-out infinite; }
+.robot-eyes { transform-box: fill-box; transform-origin: center; animation: blink 5s infinite; }
+.robot-wave { transform-origin: 152px 160px; animation: wave 3.2s ease-in-out infinite; }
+.robot-jet { transform-origin: 110px 228px; animation: flame 0.16s ease-in-out infinite alternate; }
+@keyframes bulb { 50% { fill: #fde68a; filter: drop-shadow(0 0 6px #fb923c); } }
+@keyframes core { 50% { transform: scale(1.25); filter: drop-shadow(0 0 5px #fb923c); } }
+@keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 93% { transform: scaleY(0.1); } 96% { transform: scaleY(1); } }
+@keyframes wave { 0%, 55%, 100% { transform: rotate(0); } 65% { transform: rotate(-16deg); } 75% { transform: rotate(8deg); } 85% { transform: rotate(-12deg); } }
+@keyframes flame { from { transform: scaleY(0.75); opacity: 0.85; } to { transform: scaleY(1.1); opacity: 1; } }
+
+/* ---------- Ink flood (About: now card, skills, timeline) ---------- */
+.ink-zone { position: relative; isolation: isolate; padding: var(--space-9) 0; margin-top: var(--space-5); }
+.ink-track { position: absolute; inset: 0; z-index: -1; overflow: clip; pointer-events: none; }
+.ink-sticky { position: sticky; top: 0; height: 100vh; }
+.ink-sticky svg { display: block; width: 100%; height: 100%; }
+.ink-fill { fill: var(--ink-bg); }
+.ink-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--blob-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--blob-grid) 1px, transparent 1px);
+  background-size: 36px 36px;
+  opacity: var(--ink-in, 1);
+}
+.ink-content { opacity: var(--ink-in, 1); }
+.ink-zone .about-grid {
+  padding-top: 0;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  grid-template-areas: "skills now" "skills timeline";
+}
+.ink-zone .about-now { grid-area: now; }
+.ink-zone .about-skills { grid-area: skills; }
+.ink-zone .about-timeline { grid-area: timeline; }
+.ink-zone .about-grid > div { height: auto; }
+.ink-zone .about-skills > .panel { height: 100%; }
+
+/* Inside the ink the palette inverts: light mode borrows the dark tokens. */
+:root[data-theme="light"] .ink-content,
+:root:not([data-theme]) .ink-content {
+  color-scheme: dark;
+  --bg: #2b1d12;
+  --surface: #362719;
+  --surface-2: #413023;
+  --text: #fbf3ea;
+  --text-muted: #d2c2b2;
+  --border: #554232;
+  --border-strong: #9b8571;
+  --focus: #93c5fd;
+  --on-accent: #17110c;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 30px -12px rgb(0 0 0 / 0.5);
+  --mark-bg: #facc15;
+  --mark-text: #17110c;
+  --hero-panel: rgb(54 39 25 / 0.85);
+  --c-overview: #fdba74;
+  --c-experience: #fda4af;
+  --c-education: #fcd34d;
+  --c-projects: #5eead4;
+  --c-writing: #f9a8d4;
+  --c-social: #93c5fd;
+  --c-activities: #86efac;
+}
+:root[data-theme="dark"] .ink-content {
+  --surface: #33271d;
+  --surface-2: #3d2f23;
+  --hero-panel: rgb(51 39 29 / 0.85);
+}
+/* Re-derive the helpers so they pick up the swapped values. */
+.ink-content {
+  --accent: var(--c-overview);
+  color: var(--text);
+  --surface-3: color-mix(in srgb, var(--surface-2) 70%, var(--border));
+  --text-dim: var(--text-muted);
+  --border-2: var(--border);
+  --grid-line: color-mix(in srgb, var(--border) 45%, transparent);
+  --glow: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 62rem) {
+  .hero { min-height: 0; }
+  .hero-inner { gap: var(--space-4); }
+  .hero-robot { order: -1; width: min(52vw, 220px); }
+  .blob-a { width: 70vw; right: -22%; top: -6%; }
+  .blob-b, .prop-drone, .glyph-2, .glyph-3 { display: none; }
+  .blob-c { width: 46vw; bottom: -10%; }
+  .blob-d { width: 50vw; bottom: -18%; right: -24%; }
+  .prop-planet { width: 104px; right: 2%; top: 4%; }
+  .glyph-1 { left: 6%; top: 6%; }
+  .prop-gear-wrap { right: 6%; bottom: 3%; }
+  .prop-chip { display: none; }
+  .ink-zone .about-grid { grid-template-columns: 1fr; grid-template-areas: "now" "skills" "timeline"; }
+}
+@media (max-width: 40rem) {
+  .hero-name.extruded { font-size: 2.35rem; -webkit-text-stroke-width: 1.5px; }
+}
+
+@media (forced-colors: active) {
+  .hero-scene, .ink-track { display: none; }
+  .hero-name.extruded { color: CanvasText; -webkit-text-stroke: 0; text-shadow: none; }
+  .ink-content { opacity: 1; }
+}

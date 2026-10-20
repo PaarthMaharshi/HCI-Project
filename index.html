@@ -8,7 +8,7 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
     <title>Paarth Maharshi</title>
     <script>
       // Apply saved prefs before first paint so the theme doesn't flash.
@@ -18,6 +18,10 @@
         var d = document.documentElement;
         d.dataset.theme = p.theme === "dark" ? "dark" : "light";
         if (p.largeText) d.dataset.text = "large";
+        // ?motion=on keeps animations even when the OS asks for reduced motion.
+        var m = new URLSearchParams(location.search).get("motion");
+        if (m === "on" || m === "off") localStorage.setItem("hci-motion", m);
+        if (localStorage.getItem("hci-motion") === "on") d.dataset.motion = "on";
       } catch (e) {}
     </script>
   </head>
