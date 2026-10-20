@@ -30,7 +30,7 @@ export function Experience() {
                   <li>{first}</li>
                 </ul>
                 {rest.length > 0 && (
-                  <Disclosure id={e.id} label={`Show ${rest.length} more`} openLabel="Show less">
+                  <Disclosure id={e.id} label={`Show ${rest.length} more`} openLabel="Show less" annotate={i === 0}>
                     <ul className="row-bullets">
                       {rest.map((b) => (
                         <li key={b}>{b}</li>

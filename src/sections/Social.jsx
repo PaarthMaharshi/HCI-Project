@@ -1,6 +1,7 @@
 import { profile } from "../data/profile.js";
 import { GitHubIcon, LinkedInIcon, ExternalIcon, MailIcon } from "../components/Icons.jsx";
 import { SectionBand } from "../components/SectionBand.jsx";
+import { Annotation } from "../components/Annotation.jsx";
 
 const ICONS = { "social-github": GitHubIcon, "social-linkedin": LinkedInIcon };
 
@@ -35,6 +36,7 @@ export function Social() {
           </a>
         </li>
       </ul>
+      <Annotation id="social" block />
     </>
   );
 }

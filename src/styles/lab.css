@@ -1,0 +1,170 @@
+/* Usability Lab (#lab), HCI annotations and the larger-text setting.
+   Restored from the pre-redesign stylesheet and adapted to the current tokens. */
+
+:root[data-text="large"] { font-size: 125%; }
+
+/* ---------- Lab page ---------- */
+.lab-header { position: sticky; top: 0; z-index: 50; background: var(--header-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.lab-header-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); padding-top: var(--space-2); padding-bottom: var(--space-2); }
+.lab-header .lab-tools { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-left: auto; }
+.lab-main { padding-top: var(--space-6); padding-bottom: var(--space-7); }
+.section-head {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap;
+  margin-bottom: var(--space-5); padding-bottom: var(--space-3);
+  border-bottom: 4px solid var(--accent);
+}
+.section-head h1, .section-head h2 { margin: 0; }
+.section-head p { margin: 0; color: var(--text-muted); }
+.eyebrow { display: block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 0 0 var(--space-1); }
+
+.tabs {
+  display: flex;
+  gap: var(--space-1);
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding-bottom: 2px;
+}
+.tab {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--target);
+  padding: 0 var(--space-3);
+  border: 0;
+  border-bottom: 4px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+.tab:hover { color: var(--text); background: var(--surface-2); }
+.tab[aria-selected="true"] { color: var(--text); border-bottom-color: var(--accent); }
+
+/* ---------- HCI annotations ---------- */
+.hci-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.4rem;
+  background: var(--mark-bg);
+  color: var(--mark-text);
+  border: 1px dashed var(--mark-text);
+  vertical-align: middle;
+  white-space: normal;
+}
+.hci-note::before { content: "HCI"; background: var(--mark-text); color: var(--mark-bg); border-radius: 0.25rem; padding: 0 0.25rem; font-size: 0.65rem; }
+.hci-block { display: flex; margin: var(--space-2) 0; }
+.dock-host .hci-note { position: absolute; left: var(--space-4); bottom: 4.6rem; pointer-events: auto; }
+
+/* ---------- Usability Lab ---------- */
+.lab-tabs { margin-bottom: var(--space-5); border-bottom: 1px solid var(--border); }
+.lab-toolbar { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; margin-bottom: var(--space-4); }
+.field { display: grid; gap: var(--space-1); }
+.field label, .field-label { font-weight: 600; font-size: 0.9rem; }
+.select, .textarea, .input {
+  min-height: var(--target);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border-strong);
+  background: var(--surface);
+}
+.textarea { min-height: 4.5rem; resize: vertical; width: 100%; }
+.task-row { display: grid; grid-template-columns: auto 1fr auto; gap: var(--space-4); align-items: center; }
+.task-id {
+  display: grid; place-items: center;
+  width: 2.75rem; height: 2.75rem;
+  border-radius: 0.8rem;
+  background: var(--accent); color: var(--on-accent);
+  font-weight: 700; font-family: var(--font-head);
+}
+.task-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; justify-content: flex-end; align-items: center; }
+.timer { font-family: var(--font-mono); font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 4.5rem; text-align: right; }
+.result-badge { display: inline-flex; align-items: center; gap: 0.3rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px; border: 2px solid currentColor; font-size: 0.85rem; }
+.result-ok { color: var(--ok); }
+.result-bad { color: var(--bad); }
+.answer-hint { font-size: 0.9rem; color: var(--text-muted); }
+
+.sus-item { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-3) var(--space-4); margin: 0; }
+.sus-item legend { font-weight: 600; padding: 0 var(--space-1); }
+.likert { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-2); margin-top: var(--space-2); }
+.likert label {
+  display: grid; place-items: center;
+  min-height: var(--target);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 700;
+  position: relative;
+}
+.likert input { position: absolute; opacity: 0; inset: 0; cursor: pointer; margin: 0; }
+.likert label:has(input:checked) { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.likert label:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+.likert-ends { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-top: var(--space-1); }
+
+.stat-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: var(--space-3); margin-bottom: var(--space-5); }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space-4); }
+.stat .stat-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+.stat .stat-value { font-family: var(--font-head); font-size: 2rem; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.stat .stat-sub { font-size: 0.85rem; color: var(--text-muted); }
+
+.gauge { margin: var(--space-3) 0 var(--space-5); }
+.gauge-track { position: relative; height: 0.75rem; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); }
+.gauge-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; background: var(--accent); }
+.gauge-bench { position: absolute; top: -0.4rem; bottom: -0.4rem; width: 2px; background: var(--text); }
+.gauge-scale { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-top: var(--space-1); position: relative; }
+.gauge-bench-label { position: absolute; transform: translateX(-50%); font-weight: 700; color: var(--text); }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.data-table caption { text-align: left; padding: var(--space-3) var(--space-4); font-weight: 700; }
+.data-table th, .data-table td { padding: var(--space-2) var(--space-4); border-top: 1px solid var(--border); text-align: left; }
+.data-table td.num, .data-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.data-table thead th { background: var(--surface-2); font-size: 0.85rem; }
+
+.heuristic { display: grid; grid-template-columns: 1fr minmax(12rem, 16rem); gap: var(--space-4); }
+.confirm-box {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--bad);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+.confirm-box p { margin: 0; font-weight: 600; }
+.note { color: var(--text-muted); font-size: 0.95rem; }
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 47.99rem) {
+  .heuristic { grid-template-columns: 1fr; }
+  .task-row { grid-template-columns: auto 1fr; }
+  .task-actions { grid-column: 1 / -1; justify-content: flex-start; }
+}
+@media (forced-colors: active) {
+  .tab[aria-selected="true"] { border-bottom-color: Highlight; }
+}
+[data-section="lab"] { --accent: var(--c-lab); }
+
+/* Wrong-turn counter and the 1–7 ease question (Lab additions). */
+.error-count { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
+.seq { border: 0; margin: var(--space-3) 0 0; padding: var(--space-3) 0 0; border-top: 1px dashed var(--border); }
+.seq legend { font-weight: 600; font-size: 0.9rem; padding: 0; }
+.likert-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.35rem; } /* shrinks on phones; each option stays well above 24px */
+
+/* Toggle buttons in the nav and footer. */
+.text-size-glyph { font-family: var(--font-head); font-weight: 700; font-size: 0.95rem; line-height: 1; }
+.text-size-glyph small { font-size: 0.7em; }
+.text-size-btn[aria-pressed="true"],
+#ctl-annotations[aria-pressed="true"] { background: color-mix(in srgb, var(--c-overview) 16%, transparent); color: var(--text); }
+.hci-glyph { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.04em; padding: 0.05rem 0.3rem; border-radius: 0.25rem; background: var(--mark-text); color: var(--mark-bg); }
+.drawer-tools .drawer-wide { grid-column: 1 / -1; }
+.nav-notes { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-2); margin-top: var(--space-2); pointer-events: auto; }
+.nav .nav-notes, .topbar .nav-notes { max-width: 100%; }

@@ -13,4 +13,7 @@ export function useMediaQuery(query) {
 }
 
 export const DESKTOP = "(min-width: 75rem)";
+// Media-query rems ignore the root font size, so with larger text (125%) the
+// full desktop bar needs 125% more room before it fits.
+export const DESKTOP_LARGE_TEXT = "(min-width: 93.75rem)";
 export const PHONE = "(max-width: 47.99rem)";

@@ -67,7 +67,7 @@ export function Projects() {
                   ))}
                 </ul>
                 <div className="proj-foot">
-                  <Disclosure id={p.id} label="Details, tech stack & link" openLabel="Hide details">
+                  <Disclosure id={p.id} label="Details, tech stack & link" openLabel="Hide details" annotate={i === 0}>
                     <ul className="row-bullets">
                       {p.bullets.map((b) => (
                         <li key={b}>{b}</li>

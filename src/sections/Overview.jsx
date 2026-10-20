@@ -1,4 +1,5 @@
 import { profile } from "../data/profile.js";
+import { Annotation } from "../components/Annotation.jsx";
 import { CopyButton } from "../components/CopyButton.jsx";
 import { PinIcon } from "../components/Icons.jsx";
 import { BlurHeading, Count, Gradient, Reveal, Shiny } from "../components/Motion.jsx";
@@ -49,6 +50,7 @@ function NowCard() {
           </dd>
         </div>
       </dl>
+      <Annotation id="now" block />
     </SpotlightCard>
   );
 }
@@ -63,6 +65,7 @@ function Hero() {
       <HeroScene />
       <div className="container hero-inner">
         <div className="hero-copy">
+          <Annotation id="hero" block />
           <p className="hero-hello">
             <Gradient>Hi, I’m</Gradient>
           </p>
@@ -83,12 +86,14 @@ function Hero() {
               See projects <span aria-hidden="true" className="arrow">↓</span>
             </a>
           </div>
+          <Annotation id="copy" block />
         </div>
         <NowCard />
       </div>
 
       <div className="container">
         <h2 className="visually-hidden">Quick facts</h2>
+        <Annotation id="heroScene" block />
         <ul className="stats">
           {profile.stats.map((s) => (
             <li key={s.caption}>
@@ -106,11 +111,15 @@ function About() {
   const { reveal } = useView();
   return (
     <InkFlood>
+      <div className="container">
+        <Annotation id="inkBand" block />
+      </div>
       <div className="container about-grid">
         <Reveal className="about-skills">
           <section aria-labelledby="skills-h" className="about-col panel">
             <p className="mini-label">What I work with</p>
             <h2 id="skills-h" className="about-title">Skills</h2>
+            <Annotation id="skills" block />
             <dl className="skills">
               {profile.skills.map((s) => (
                 <div className="skill-row" key={s.id} id={`item-${s.id}`} data-item="" tabIndex={-1}>
@@ -132,6 +141,7 @@ function About() {
           <section aria-labelledby="timeline-h" className="about-col panel">
             <p className="mini-label">Recently</p>
             <h2 id="timeline-h" className="about-title">Timeline</h2>
+            <Annotation id="timeline" block />
             <ol className="timeline">
               {profile.timeline.map((t) => (
                 <li key={t.date + t.text}>

@@ -1,8 +1,9 @@
 import { useView } from "../view.js";
+import { Annotation } from "./Annotation.jsx";
 import { ChevronIcon } from "./Icons.jsx";
 
 // Collapsed-by-default details. Open state lives in App so search can open it.
-export function Disclosure({ id, label, openLabel = "Hide details", children }) {
+export function Disclosure({ id, label, openLabel = "Hide details", children, annotate = false }) {
   const { openIds, toggleOpen } = useView();
   const open = openIds.has(id);
   const bodyId = `disc-${id}`;
@@ -11,7 +12,8 @@ export function Disclosure({ id, label, openLabel = "Hide details", children }) 
       <button type="button" className="disclosure-btn" aria-expanded={open} aria-controls={bodyId} onClick={() => toggleOpen(id)}>
         <ChevronIcon className="icon chev" />
         {open ? openLabel : label}
-      </button>
+      </button>{" "}
+      {annotate && <Annotation id="disclosure" />}
       <div id={bodyId} className="disclosure-body" hidden={!open}>
         {children}
       </div>

@@ -5,6 +5,7 @@ import "./styles/tokens.css";
 import "./styles/global.css";
 import "./styles/tech.css";
 import "./styles/pink.css";
+import "./styles/lab.css";
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
