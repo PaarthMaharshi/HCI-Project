@@ -5,7 +5,8 @@ import { blobPath, makeBlob, onFrame } from "./blob.js";
 // A self-morphing ink blob. Its inside is a little piece of "tech night sky":
 // a faint circuit grid, traces and twinkling nodes. Purely decorative.
 // It only animates while on screen, and holds still under reduced motion.
-export function Blob({ seed = 1, speed = 1, wobble = 1, className = "", style, circuit = true }) {
+// variant="sparkle" swaps the circuit for soft rings and sparkles.
+export function Blob({ seed = 1, speed = 1, wobble = 1, className = "", style, circuit = true, variant = "tech" }) {
   const reduce = useReducedMotion();
   const waves = useMemo(() => makeBlob(seed, 9), [seed]);
   const pathRef = useRef();
@@ -39,7 +40,17 @@ export function Blob({ seed = 1, speed = 1, wobble = 1, className = "", style, c
         </pattern>
       </defs>
       <path ref={pathRef} className="blob-fill" />
-      {circuit && (
+      {circuit && variant === "sparkle" && (
+        <g clipPath={`url(#clip-${uid})`}>
+          {[[30, 30, 7], [68, 62, 9], [40, 70, 5], [74, 32, 5]].map(([x, y, r], i) => (
+            <circle key={i} className="blob-ring" cx={x} cy={y} r={r} style={{ animationDelay: `${i * 0.7}s` }} />
+          ))}
+          {[[52, 20], [20, 52], [82, 50], [56, 44], [28, 82], [62, 84], [46, 56]].map(([x, y], i) => (
+            <path key={`s${i}`} className="blob-sparkle" d={`M${x} ${y - 3}q.6 2.4 3 3q-2.4.6-3 3q-.6-2.4-3-3q2.4-.6 3-3z`} style={{ animationDelay: `${(i * 0.53) % 3}s` }} />
+          ))}
+        </g>
+      )}
+      {circuit && variant === "tech" && (
         <g clipPath={`url(#clip-${uid})`}>
           <rect width="100" height="100" fill={`url(#grid-${uid})`} />
           <path className="blob-trace" d="M18 62h14l6-6h16l5 5h22M30 34h10l6 6h18M60 24v10l6 6v14M24 48h8" />

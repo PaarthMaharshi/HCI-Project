@@ -46,7 +46,7 @@ function ContactCta({ onNav, className = "" }) {
       as="a"
       href="#overview"
       className={`nav-cta ${className}`}
-      color={theme === "dark" ? "#fdba74" : "#c2410c"}
+      color={theme === "dark" ? "#f9a8d4" : "#be185d"}
       speed="5s"
       onClick={(e) => { e.preventDefault(); onNav("overview", { target: "ctl-copy-email" }); }}
     >

@@ -4,6 +4,7 @@ import App from "./App.jsx";
 import "./styles/tokens.css";
 import "./styles/global.css";
 import "./styles/tech.css";
+import "./styles/pink.css";
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>

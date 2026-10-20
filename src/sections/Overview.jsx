@@ -5,15 +5,14 @@ import { BlurHeading, Count, Gradient, Reveal, Shiny } from "../components/Motio
 import SpotlightCard from "../components/reactbits/SpotlightCard/SpotlightCard.jsx";
 import { HeroScene, useParallax } from "../components/tech/HeroScene.jsx";
 import { InkFlood } from "../components/tech/InkFlood.jsx";
-import { Robot } from "../components/tech/Robot.jsx";
+import { usePrefs } from "../hooks/usePrefs.js";
 import { formatMonth } from "../lib/format.js";
 import { useRef } from "react";
 import { useView } from "../view.js";
 
 // Side card: what Paarth is doing right now, built from the profile data.
-// It sits inside the ink band, which always uses the dark palette.
 function NowCard() {
-  const theme = "dark";
+  const { theme } = usePrefs();
   const b = profile.basics;
   const latest = profile.experience[0];
   return (
@@ -22,8 +21,8 @@ function NowCard() {
       spotlightColor="var(--accent)"
       intensity={0.5}
       borderGlow={0.8}
-      className="now-card"
-      style={{ "--spotlight-card-surface": "var(--hero-panel)", "--spotlight-card-border": "var(--border)", "--spotlight-card-shadow": "var(--shadow)" }}
+      className="now-card fade-up"
+      style={{ "--d": "0.5s", "--spotlight-card-surface": "var(--hero-panel)", "--spotlight-card-border": "var(--border)", "--spotlight-card-shadow": "var(--shadow)" }}
     >
       <div className="now-id">
         <span className="now-avatar" aria-hidden="true">{b.initials}</span>
@@ -34,7 +33,7 @@ function NowCard() {
       </div>
       <p className="now-status">
         <span className="status-dot" aria-hidden="true" />
-        <Shiny tone="dark">{b.availability}</Shiny>
+        <Shiny>{b.availability}</Shiny>
       </p>
       <dl className="now-list">
         <div>
@@ -85,9 +84,7 @@ function Hero() {
             </a>
           </div>
         </div>
-        <div className="par hero-robot" style={{ "--depth": 12 }}>
-          <Robot />
-        </div>
+        <NowCard />
       </div>
 
       <div className="container">
@@ -110,10 +107,6 @@ function About() {
   return (
     <InkFlood>
       <div className="container about-grid">
-        <Reveal className="about-now">
-          <NowCard />
-        </Reveal>
-
         <Reveal className="about-skills">
           <section aria-labelledby="skills-h" className="about-col panel">
             <p className="mini-label">What I work with</p>

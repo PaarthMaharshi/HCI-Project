@@ -43,7 +43,7 @@ function PhoneDock({ active, onNav, onSearch }) {
         magnification={44}
         panelHeight={56}
         gap={6}
-        accentColor="#c2410c"
+        accentColor="#be185d"
         showBadges={false}
       />
     </nav>

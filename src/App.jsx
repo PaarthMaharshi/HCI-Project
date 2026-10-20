@@ -144,7 +144,7 @@ export default function App() {
           <a className="skip-link" href="#main" onClick={(e) => { e.preventDefault(); document.getElementById("main")?.focus(); }}>
             Skip to content
           </a>
-          <ClickSpark disabled={reduce} sparkColor={prefs.theme === "dark" ? "#fdba74" : "#c2410c"} sparkSize={9} sparkRadius={18} sparkCount={8} duration={420}>
+          <ClickSpark disabled={reduce} sparkColor={prefs.theme === "dark" ? "#f9a8d4" : "#be185d"} sparkSize={9} sparkRadius={18} sparkCount={8} duration={420}>
             <div className="layout">
               <Sidebar ref={searchRef} index={index} onSelect={onSelect} active={active} onNav={goTo} onHelp={() => setHelpOpen(true)} />
               <div className="content">
