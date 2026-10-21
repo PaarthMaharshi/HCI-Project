@@ -30,7 +30,7 @@ Paarth Maharshi (/)
 ├── 3 Projects (#projects) ....... tag filter → project cards (details, stack, link collapsed)
 ├── 4 Education (#education) ..... VJTI · HSC 82.50% · SSC 93% side by side (marks collapsed)
 ├── 5 Activities (#activities) ... Hackathons · Agastya · LeetCode
-├── 6 Writing (#writing) .......... empty state → link to Projects
+├── 6 Writing (#writing) .......... posts (date · reading time · tags · excerpt); full text opens in place; empty state if none
 ├── 7 Social (#social) ............ GitHub / LinkedIn / Email link rows
 ├── Every section after Overview opens with a tilted marquee band in its colour, then "0N —" and the h2
 ├── Footer ....................... last updated · Show HCI notes · Keyboard shortcuts [?] · Usability Lab [8]

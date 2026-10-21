@@ -40,7 +40,7 @@ All profile content is in **`src/data/profile.js`**; you never need to touch lay
 | `experience[]` | `{ id, role, org, place, mode, start: "YYYY-MM", end, bullets[], tags[] }` |
 | `education[]` | `{ id, degree, institution, board?, start?, end, status?, score?: { label, detail }, subjects?: [{ name, mark }] }` |
 | `projects[]` | `{ id, title, start, end, summary, bullets[], stack[], tags[], link }` |
-| `posts[]` | `{ id, title, date: "YYYY-MM-DD", readingMins, tags[], url, excerpt? }`; empty shows the empty state |
+| `posts[]` | `{ id, title, date: "YYYY-MM-DD", readingMins, tags[], url?, excerpt?, body? }`; `body` is a list of `{ h }`, `{ p }` and `{ ul: [] }` blocks shown in place under "Read the full post"; an empty list shows the empty state |
 | `social[]` | `{ id, label, handle, url, blurb }` |
 | `activities[]` | `{ id, title, detail, tags[] }` |
 | `timeline[]` | `{ date, text, ref?: { section, id } }`; `ref` makes the entry a link to that item |

@@ -28,7 +28,14 @@ export function buildIndex(profile) {
     add({ section: "projects", id: p.id, title: p.title, meta: p.stack.join(", "), text: `project ${p.summary} ${p.bullets.join(" ")} ${p.tags.join(" ")}`, disclose: true });
 
   for (const p of profile.posts)
-    add({ section: "writing", id: p.id, title: p.title, meta: p.tags.join(", "), text: `blog post article ${p.excerpt ?? ""}` });
+    add({
+      section: "writing",
+      id: p.id,
+      title: p.title,
+      meta: p.tags.join(", "),
+      text: `blog post article writing ${p.excerpt ?? ""} ${(p.body ?? []).map((b) => b.h ?? b.p ?? (b.ul ?? []).join(" ")).join(" ")}`,
+      disclose: !!p.body,
+    });
 
   for (const s of profile.social)
     add({ section: "social", id: s.id, title: s.label, meta: s.url, text: `social profile link ${s.handle}` });

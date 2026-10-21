@@ -1037,3 +1037,12 @@ dialog::backdrop { background: rgb(0 0 0 / 0.6); backdrop-filter: blur(4px); }
   .filter-chip[aria-pressed="true"] { border: 3px solid Highlight; }
   .tile, .panel { border: 1px solid CanvasText; }
 }
+
+/* Blog posts: full text opens in place under "Read the full post". */
+.post-excerpt { max-width: 46rem; }
+.post-body { max-width: 42rem; padding-top: var(--space-3); font-size: 1.02rem; line-height: 1.75; }
+.post-body h4 { font-size: 1.12rem; margin: var(--space-5) 0 var(--space-2); }
+.post-body p { margin: 0 0 var(--space-3); }
+.post-body ul { margin: 0 0 var(--space-4); padding-left: 1.3rem; }
+.post-body li + li { margin-top: var(--space-2); }
+.post-row .disclosure-btn { margin-top: var(--space-3); }
