@@ -11,11 +11,11 @@ This document maps each HCI principle to the feature that implements it. Press *
 | N3 | User control and freedom | Esc closes search, the shortcut panel and the phone menu; filters have "All" and "Clear filter"; every "Show more" can be closed again; each section link updates the URL so the browser Back button works; deleting Lab data has Cancel; the Lab has a clear "← Back to profile". |
 | N4 | Consistency and standards | One card, chip and disclosure style across all sections; the nav stays in the same floating position on every screen (on phones the top bar and Menu stay put); each section keeps its own colour in its heading band; the Lab sub-tabs follow the WAI-ARIA tabs pattern. |
 | N5 | Error prevention | Copy email means nobody has to retype the address; all settings are reversible toggles; "Clear all sessions" in the Lab needs a second, explicit "Delete everything" click and says how many sessions will be lost; SUS cannot be scored until all 10 items are answered; a task cannot be started while another is running. |
-| N6 | Recognition rather than recall | All seven section links are always visible; filter tags are chips rather than typed; search suggests results while typing; settings (larger text, theme, HCI notes) can also be found through search; the `?` panel lists every shortcut. |
+| N6 | Recognition rather than recall | All seven section links are always visible; the A+ button carries a visible “Text size” caption; each project card shows its main technologies without opening it; filter tags are chips rather than typed; search suggests results while typing; settings can also be found through search; the search dropdown and the `?` panel point to every shortcut. |
 | N7 | Flexibility and efficiency of use | Keyboard accelerators (`/` search, `1`–`7` sections, `8` Lab, `?` help, arrows + Enter in search results) for experienced users; a thumb-reach dock on phones; search jumps straight to an item and highlights it. Everything also works with mouse, touch and screen readers. |
 | N8 | Aesthetic and minimalist design | The key facts (name, headline, availability, contact, latest role, four quick numbers) are in the hero; details (project bullets, subject marks, extra experience bullets) are collapsed by default. The animated background is decoration only and is kept subordinate to the content (see "Visual design and motion" below). |
 | N9 | Help users recognise, diagnose and recover from errors | Search with no matches says so and suggests terms ("Try 'React', 'internship' or 'Class 12'"); a filter combination with no projects shows a "Clear filter" button; if copying fails, the toast explains how to copy manually ("Select the address and press Ctrl+C"). |
-| N10 | Help and documentation | Keyboard shortcut panel (`?` or footer button); "Show HCI notes" labels each part of the interface with the principle it applies; the Lab includes facilitator instructions inline. |
+| N10 | Help and documentation | Keyboard shortcut panel (`?` or footer button), announced by a tip in the search dropdown; "Show HCI notes" labels each part of the interface with the principle it applies; the Lab includes facilitator instructions inline. |
 
 ## Shneiderman's 8 Golden Rules
 
@@ -27,7 +27,7 @@ This document maps each HCI principle to the feature that implements it. Press *
 | Design dialogs to yield closure | Task runner ends with "All 6 tasks recorded → Continue to SUS questionnaire"; SUS ends with a score, grade and comparison with the average. |
 | Prevent errors | See N5. |
 | Permit easy reversal of actions | Toggles switch back; disclosures close; filters clear; Lab tasks can be redone. |
-| Keep users in control | Nothing changes on its own: the theme is light until the visitor picks dark; motion follows the OS setting; nothing auto-plays sound or opens without a click. |
+| Keep users in control | Nothing changes on its own: the theme is light until the visitor picks dark; motion starts from the OS setting and the Animations button turns it on or off; nothing auto-plays sound or opens without a click. |
 | Reduce short-term memory load | Visible section links, tags shown on every card, search highlights the matched words, the Lab shows the expected answer next to each task. |
 
 ## Gestalt principles
@@ -39,14 +39,14 @@ This document maps each HCI principle to the feature that implements it. Press *
 
 ## Fitts's law and Hick's law
 
-- **Fitts**: controls are at least 44×44px (48px on phones); the whole Social row is the link; the Copy button sits right next to the address; filter chips are pill-sized. An automated check confirms no visible target is under 24px at 360px width (WCAG 2.5.8).
+- **Fitts**: controls are at least 44×44px (48px on phones, including the top-bar and menu buttons); the whole Social row is the link; the Copy button sits right next to the address; filter chips are pill-sized. An automated check confirms no visible target is under 24px at 360px width (WCAG 2.5.8).
 - **Fitts (phones)**: a dock sits at the bottom of the screen in thumb reach with the six most-used destinations (Overview, Experience, Projects, Education, Contact, Search), each a 44px button.
 - **Hick**: 7 section links in the nav; the dock offers only 6; filters appear only on Projects; facilitator tools live in a separate Lab view, split into 4 sub-tabs.
 
 ## Progressive disclosure, recognition, consistent navigation
 
 - Collapsed by default: project details/stack/link, HSC and SSC subject marks, experience bullets after the first.
-- Desktop: a floating glass nav bar stays centred at the top on every screen. Phones and tablets: a slim top bar (Menu, initials, search, A+, theme) stays put, and Menu opens a drawer (native `<dialog>`: focus is trapped, Esc closes it, focus returns to Menu).
+- Desktop: a floating glass nav bar stays centred at the top on every screen, with A+ Text size, theme and Animations buttons. Phones and tablets: a slim top bar (Menu, initials, search, A+, theme) stays put, and Menu opens a drawer with every setting labelled (native `<dialog>`: focus is trapped, Esc closes it, focus returns to Menu).
 - Search opens collapsed content automatically and scrolls the item into view, so users never need to remember where something was.
 
 ## Visual design and motion
@@ -65,10 +65,11 @@ The page takes its visual idea from a well-known "Explore the Space" landing-pag
 1. **Content first.** The hero's right-hand column holds real content (the "now" card), not an illustration, so the first screen answers a recruiter's questions.
 2. **Behind, not on top.** Every decorative layer sits under the text and never covers it; on narrow screens the blobs that would sit under the stats are removed.
 3. **Invisible to assistive tech.** The whole scene is `aria-hidden`, so screen-reader users get only content.
-4. **Stops on request.** Under `prefers-reduced-motion` the blobs freeze, the parallax and floating stop, and the ink band is shown fully flooded with no animation.
+4. **Stops on request.** Under `prefers-reduced-motion`, or when the visitor presses the Animations button, the blobs freeze, the parallax and floating stop, and the ink band is shown fully flooded with no animation.
+6. **Name first.** The blobs start moving about a second after the page loads, once the name has settled.
 5. **Not used for information.** Nothing is communicated only through motion.
 
-Visitors whose OS turns animations off globally but who still want to see them can opt in with `?motion=on` (remembered; `?motion=off` undoes it).
+The **Animations** button (sparkle icon in the nav bar, labelled in the phone menu and in the Lab header) starts from the OS setting and lets any visitor turn motion on or off; the choice is remembered. `?motion=on` / `?motion=off` in the address do the same.
 
 ## Accessibility (WCAG 2.2 AA)
 
@@ -78,10 +79,10 @@ Visitors whose OS turns animations off globally but who still want to see them c
 | 1.4.4 Resize text | "A+ Larger text" sets the root size to 125%; all sizes are in rem so the whole layout scales. With larger text on, the compact top bar is used up to a wider screen so the nav still fits. Browser zoom to 200% also works. |
 | 1.4.10 Reflow | Single column at 360px with no horizontal page scroll, with normal and larger text, on the profile and every Lab tab (checked automatically). |
 | 2.1.1 Keyboard | Everything reachable by keyboard; number keys jump to sections; Lab sub-tabs use roving tabindex with arrow keys; search is an ARIA combobox. |
-| 2.3.3 Animation from interactions | Parallax and floating stop under `prefers-reduced-motion`. |
+| 2.3.3 Animation from interactions | Parallax and floating stop under `prefers-reduced-motion` or when the Animations button is off. |
 | 2.4.1 Bypass blocks | "Skip to content" link. |
 | 2.4.7 / 2.4.11 Focus visible, not obscured | Solid focus ring in a high-contrast colour; `scroll-margin-top` keeps focused items below the sticky bar. |
-| 2.5.8 Target size | ≥ 44px controls (see Fitts); the smallest Lab rating buttons stay above 24px at 360px. |
+| 2.5.8 Target size | ≥ 44px controls (48px on phones); the smallest Lab rating buttons stay above 24px at 360px. |
 | 4.1.2 Name, role, value | `aria-current` on the section link in view, `role="tablist/tab/tabpanel"` in the Lab, `aria-pressed` on the Larger text and HCI notes toggles, `aria-expanded` on disclosures and the menu, `aria-activedescendant` in search, labelled fields, fieldset/legend for SUS and ease questions. |
 | 4.1.3 Status messages | Toasts, result counts, the Lab error counter and SUS progress are announced through `aria-live` regions. |
 | Themes | Light pink by default; dark plum one click away; the choice is remembered. |

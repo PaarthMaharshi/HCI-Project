@@ -1,5 +1,5 @@
 import { profile } from "../data/profile.js";
-import { TextSizeButton, ThemeButton } from "../components/Sidebar.jsx";
+import { MotionButton, TextSizeButton, ThemeButton } from "../components/Sidebar.jsx";
 import { UsabilityLab } from "../sections/lab/UsabilityLab.jsx";
 
 // Facilitator view at #lab, kept off the profile page so participants never see it.
@@ -17,6 +17,7 @@ export function LabPage() {
           <div className="lab-tools">
             <TextSizeButton />
             <ThemeButton />
+            <MotionButton />
           </div>
         </div>
       </header>

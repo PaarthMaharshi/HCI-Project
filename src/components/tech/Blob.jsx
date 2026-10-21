@@ -27,8 +27,9 @@ export function Blob({ seed = 1, speed = 1, wobble = 1, className = "", style, c
       if (e.isIntersecting && !off) off = onFrame(draw);
       if (!e.isIntersecting && off) { off(); off = null; }
     });
-    io.observe(svgRef.current);
-    return () => { io.disconnect(); off?.(); };
+    // Start moving about a second after page load, once the name has settled.
+    const start = setTimeout(() => svgRef.current && io.observe(svgRef.current), Math.max(0, 1200 - performance.now()));
+    return () => { clearTimeout(start); io.disconnect(); off?.(); };
   }, [waves, speed, wobble, seed, reduce]);
 
   return (

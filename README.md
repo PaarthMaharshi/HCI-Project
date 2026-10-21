@@ -5,7 +5,7 @@ An interactive personal profile that applies established HCI principles and incl
 - **Stack:** React 18 + Vite 6, plain CSS (design tokens), animated pieces from [React Bits](https://github.com/DavidHDev/react-bits), no backend
 - **Layout:** one scrolling page — Overview (hero, skills, timeline) · Experience · Projects · Education · Activities · Writing · Social — plus a separate **Usability Lab** view at `#lab`
 - **Look:** light pink with deep plum accents; morphing ink blobs, floating shapes and mouse parallax behind the hero; an extruded display name; a plum "ink" band that floods in as you scroll. Light by default, dark theme on request
-- **Highlights:** floating nav bar with scroll-spy and a reading-progress line (a top bar and Menu drawer on phones), marquee section headings, global search (`/`), number keys (`1`–`7` sections, `8` Lab), phone bottom dock, larger-text mode (A+), "HCI notes" toggle, reduced-motion support, WCAG 2.2 AA
+- **Highlights:** floating nav bar with scroll-spy and a reading-progress line (a top bar and Menu drawer on phones), marquee section headings, global search (`/`), number keys (`1`–`7` sections, `8` Lab), phone bottom dock, larger-text mode (A+ Text size), Animations on/off button, "HCI notes" toggle, reduced-motion support, WCAG 2.2 AA
 
 ## Run locally
 
@@ -18,7 +18,7 @@ npm run preview    # serve the build
 
 Needs Node 18+ (tested on Node 20.19).
 
-**Animations not showing?** The site follows the OS "reduce motion" setting (on Windows: Settings → Accessibility → Visual effects → Animation effects). To see the animations anyway, open the site once with `?motion=on`, e.g. `http://localhost:5173/?motion=on`; it is remembered, and `?motion=off` undoes it.
+**Animations not showing?** The site starts from the OS "reduce motion" setting (on Windows: Settings → Accessibility → Visual effects → Animation effects). Press the **Animations** button (sparkle icon in the nav bar, or in the phone menu) to turn them on; the choice is remembered. `?motion=on` / `?motion=off` in the address do the same.
 
 ## Design versions (git)
 

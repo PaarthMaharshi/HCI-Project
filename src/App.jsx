@@ -8,7 +8,7 @@ import { ShortcutHelp } from "./components/ShortcutHelp.jsx";
 import { ToastProvider } from "./components/Toast.jsx";
 import { PrefsContext, usePrefsState } from "./hooks/usePrefs.js";
 import { useHotkeys } from "./hooks/useHotkeys.js";
-import { motionForced, useReducedMotion } from "./hooks/useReducedMotion.js";
+import { prefersReducedMotion, useReducedMotion } from "./hooks/useReducedMotion.js";
 import { useScrollSpy } from "./hooks/useScrollSpy.js";
 import { buildIndex } from "./lib/search.js";
 import { formatMonth } from "./lib/format.js";
@@ -24,7 +24,7 @@ const SECTION_IDS = SECTIONS.map((s) => s.id);
 
 const hashId = () => window.location.hash.slice(1);
 const pageFromHash = () => (hashId() === LAB.id ? "lab" : "profile");
-const reducedMotion = () => !motionForced() && matchMedia("(prefers-reduced-motion: reduce)").matches;
+const reducedMotion = prefersReducedMotion;
 
 // Scrolls to an element, moves focus to it and flashes a highlight ring.
 function flash(elementId, { block = "center", ring = true } = {}) {

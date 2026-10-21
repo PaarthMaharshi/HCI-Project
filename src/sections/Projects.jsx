@@ -61,6 +61,11 @@ export function Projects() {
                   </span>
                 </div>
                 <p className="proj-summary">{p.summary}</p>
+                <p className="proj-stack mono">
+                  <span className="visually-hidden">Built with: </span>
+                  {p.stack.slice(0, 3).join(" · ")}
+                  {p.stack.length > 3 && ` · +${p.stack.length - 3} more`}
+                </p>
                 <ul className="chips chips-sm" aria-label="Tags">
                   {p.tags.map((t) => (
                     <li key={t}>{t}</li>

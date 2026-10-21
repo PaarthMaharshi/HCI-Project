@@ -2,7 +2,7 @@ import { forwardRef, useCallback, useEffect, useLayoutEffect, useRef, useState }
 import { SECTIONS, profile } from "../data/profile.js";
 import { DESKTOP, DESKTOP_LARGE_TEXT, useMediaQuery } from "../hooks/useMediaQuery.js";
 import { usePrefs } from "../hooks/usePrefs.js";
-import { useReducedMotion } from "../hooks/useReducedMotion.js";
+import { setAnimations, useReducedMotion } from "../hooks/useReducedMotion.js";
 import { useScrollProgress } from "../hooks/useScrollProgress.js";
 import { KeyboardIcon, MailIcon, MoonIcon, SunIcon } from "./Icons.jsx";
 import Magnet from "./reactbits/Magnet/Magnet.jsx";
@@ -29,21 +29,52 @@ export function ThemeButton({ withLabel = false }) {
 }
 
 // Larger text (WCAG 1.4.4): scales the whole page to 125%.
-export function TextSizeButton({ withLabel = false }) {
+// `inline` shows a short "Text size" caption next to the A+ (desktop bar).
+export function TextSizeButton({ withLabel = false, inline = false }) {
   const p = usePrefs();
   const label = p.largeText ? "Normal text" : "Larger text";
   return (
     <button
-      id="ctl-text-size"
+      id={withLabel ? "ctl-text-size-menu" : "ctl-text-size"}
       type="button"
-      className={`icon-btn text-size-btn${withLabel ? " has-label" : ""}`}
+      className={`icon-btn text-size-btn${withLabel ? " has-label" : ""}${inline ? " has-caption" : ""}`}
       data-tip={label}
       aria-pressed={p.largeText}
       aria-label="Larger text"
       onClick={p.toggleLargeText}
     >
       <span className="text-size-glyph" aria-hidden="true">A<small>+</small></span>
+      {inline && <span className="btn-caption" aria-hidden="true">Text size</span>}
       {withLabel && <span aria-hidden="true">{label}</span>}
+    </button>
+  );
+}
+
+function SparkleIcon() {
+  return (
+    <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" aria-hidden="true" focusable="false">
+      <path d="M12 3c.6 4.2 2.8 6.4 7 7-4.2.6-6.4 2.8-7 7-.6-4.2-2.8-6.4-7-7 4.2-.6 6.4-2.8 7-7z" />
+      <path d="M19 15.5c.2 1.3.9 2 2.2 2.2-1.3.2-2 .9-2.2 2.2-.2-1.3-.9-2-2.2-2.2 1.3-.2 2-.9 2.2-2.2z" />
+    </svg>
+  );
+}
+
+// Animations on / off. Starts from the OS setting; the choice is remembered.
+export function MotionButton({ withLabel = false }) {
+  const reduce = useReducedMotion();
+  const label = reduce ? "Turn animations on" : "Turn animations off";
+  return (
+    <button
+      id={withLabel ? "ctl-motion-menu" : "ctl-motion"}
+      type="button"
+      className={`icon-btn motion-btn${withLabel ? " has-label" : ""}`}
+      data-tip={label}
+      aria-pressed={!reduce}
+      aria-label="Animations"
+      onClick={() => setAnimations(reduce)}
+    >
+      <SparkleIcon />
+      {withLabel && <span aria-hidden="true">Animations {reduce ? "off" : "on"}</span>}
     </button>
   );
 }
@@ -247,6 +278,8 @@ function MobileBar({ index, onSelect, active, onNav, onHelp, searchRef }) {
             <ContactCta onNav={navAndClose} className="drawer-cta" />
             <div className="drawer-tools">
               <ThemeButton withLabel />
+              <TextSizeButton withLabel />
+              <MotionButton withLabel />
               <button type="button" className="icon-btn has-label" onClick={() => { setOpen(false); onHelp(); }}>
                 <KeyboardIcon /> Shortcuts
               </button>
@@ -277,10 +310,13 @@ export const Sidebar = forwardRef(function Sidebar({ index, onSelect, active, on
           <SearchBox ref={searchRef} index={index} onSelect={onSelect} placeholder="Search" />
         </div>
         <Magnet padding={24} magnetStrength={4} disabled={reduce}>
-          <TextSizeButton />
+          <TextSizeButton inline />
         </Magnet>
         <Magnet padding={24} magnetStrength={4} disabled={reduce}>
           <ThemeButton />
+        </Magnet>
+        <Magnet padding={24} magnetStrength={4} disabled={reduce}>
+          <MotionButton />
         </Magnet>
         <ContactCta onNav={onNav} />
         <ScrollBar />

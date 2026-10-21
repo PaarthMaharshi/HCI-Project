@@ -18,10 +18,11 @@
         var d = document.documentElement;
         d.dataset.theme = p.theme === "dark" ? "dark" : "light";
         if (p.largeText) d.dataset.text = "large";
-        // ?motion=on keeps animations even when the OS asks for reduced motion.
+        // ?motion=on / ?motion=off (or the Animations button) overrides the OS reduced-motion setting.
         var m = new URLSearchParams(location.search).get("motion");
         if (m === "on" || m === "off") localStorage.setItem("hci-motion", m);
-        if (localStorage.getItem("hci-motion") === "on") d.dataset.motion = "on";
+        var saved = localStorage.getItem("hci-motion");
+        if (saved === "on" || saved === "off") d.dataset.motion = saved;
       } catch (e) {}
     </script>
   </head>

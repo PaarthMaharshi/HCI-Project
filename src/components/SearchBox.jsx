@@ -79,7 +79,8 @@ export const SearchBox = forwardRef(function SearchBox({ index, onSelect, placeh
       />
       {!query && <kbd aria-hidden="true">/</kbd>}
       {showList && (
-        <ul id="search-results" role="listbox" aria-label="Search results" className="search-results">
+        <div className="search-results">
+        <ul id="search-results" role="listbox" aria-label="Search results" className="search-list">
           {results.length === 0 ? (
             <li className="search-empty" role="option" aria-selected="false" aria-disabled="true">
               No results for “{query}”. Try “React”, “internship” or “Class 12”.
@@ -107,6 +108,8 @@ export const SearchBox = forwardRef(function SearchBox({ index, onSelect, placeh
             ))
           )}
         </ul>
+        <p className="search-hint">Tip: press <kbd>?</kbd> to see every keyboard shortcut</p>
+        </div>
       )}
       <div className="visually-hidden" aria-live="polite">
         {showList ? `${results.length} result${results.length === 1 ? "" : "s"}` : ""}

@@ -168,3 +168,21 @@
 .drawer-tools .drawer-wide { grid-column: 1 / -1; }
 .nav-notes { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-2); margin-top: var(--space-2); pointer-events: auto; }
 .nav .nav-notes, .topbar .nav-notes { max-width: 100%; }
+
+/* "Text size" caption next to A+ in the desktop bar. */
+.text-size-btn.has-caption { width: auto; gap: 0.35rem; padding: 0 0.7rem 0 0.6rem; }
+.btn-caption { font-size: 0.78rem; font-weight: 600; white-space: nowrap; }
+.motion-btn[aria-pressed="true"] { color: var(--c-overview); }
+
+/* Phone/tablet top bar: 44px targets. */
+.topbar .icon-btn { width: var(--target); height: var(--target); }
+
+/* Main stack on each project card. */
+.proj-stack { margin: 0 0 var(--space-3); font-size: 0.74rem; letter-spacing: 0.02em; color: var(--text-muted); }
+
+/* Search dropdown: list plus a shortcut hint. */
+.search-results .search-list { list-style: none; margin: 0; padding: 0; }
+.search-hint { margin: var(--space-2) 0 0; padding: var(--space-2) var(--space-3) 0; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--text-muted); }
+
+/* Drawer settings buttons: full touch-target height. */
+.drawer-tools .icon-btn { height: auto; min-height: var(--target); }

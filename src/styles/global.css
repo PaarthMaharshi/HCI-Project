@@ -1027,6 +1027,12 @@ dialog::backdrop { background: rgb(0 0 0 / 0.6); backdrop-filter: blur(4px); }
   :root:not([data-motion="on"]) *::after { animation: none !important; transition: none !important; }
 }
 
+/* The visitor turned animations off with the Animations button. */
+:root[data-motion="off"] { scroll-behavior: auto; }
+:root[data-motion="off"] *,
+:root[data-motion="off"] *::before,
+:root[data-motion="off"] *::after { animation: none !important; transition: none !important; }
+
 /* Forced colours (Windows High Contrast): keep state and decoration visible. */
 @media (forced-colors: active) {
   .shiny-text, .gradient-text__content { -webkit-text-fill-color: CanvasText; background: none; }
