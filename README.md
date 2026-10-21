@@ -24,10 +24,10 @@ Needs Node 18+ (tested on Node 20.19).
 
 | Ref | What it is |
 |---|---|
-| `pink-professional` | Current design: pink/plum, neutral floating shapes, "now" card in the hero, Usability Lab, larger text, HCI notes |
-| `gligar-pokemon` | Pink Pokémon variant with a Gligar mascot (uses official artwork) |
+| `main` / `pink-professional` | Current design: pink/plum, neutral floating shapes, "now" card in the hero, Usability Lab, larger text, HCI notes |
+| `gligar-pokemon` | Pink Pokémon variant with a Gligar mascot (local only, not pushed: uses official artwork) |
 | `robot-tech-redesign` | Tech variant with a hand-drawn robot mascot, brown/orange palette |
-| `main` / tag `original-design` | The design before the blob/animation redesign |
+| tag `original-design` | The design before the blob/animation redesign |
 
 ## Edit the content
 
