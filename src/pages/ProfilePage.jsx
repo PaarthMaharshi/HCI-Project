@@ -1,3 +1,4 @@
+import { Annotation } from "../components/Annotation.jsx";
 import { BriefcaseIcon, CapIcon, CodeIcon, HomeIcon, MailIcon, SearchIcon } from "../components/Icons.jsx";
 import { Reveal } from "../components/Motion.jsx";
 import Dock from "../components/reactbits/Dock/Dock.jsx";
@@ -35,6 +36,7 @@ function PhoneDock({ active, onNav, onSearch }) {
   ];
   return (
     <nav className="dock-host" aria-label="Quick navigation">
+      <Annotation id="dock" />
       <Dock
         items={items}
         theme={theme}
@@ -43,7 +45,7 @@ function PhoneDock({ active, onNav, onSearch }) {
         magnification={44}
         panelHeight={56}
         gap={6}
-        accentColor="#c2410c"
+        accentColor="#be185d"
         showBadges={false}
       />
     </nav>

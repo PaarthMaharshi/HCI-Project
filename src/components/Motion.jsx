@@ -55,8 +55,8 @@ export function Count({ value, label, suffix = "", className = "" }) {
 
 // ShinyText and GradientText parse colours in JS, so they get hex values per theme.
 const INK = {
-  light: { text: "#2b1d12", shine: "#c2410c", gradient: ["#c2410c", "#be123c", "#b45309"] },
-  dark: { text: "#fbf3ea", shine: "#fdba74", gradient: ["#fdba74", "#fda4af", "#fcd34d"] },
+  light: { text: "#3b1530", shine: "#be185d", gradient: ["#be185d", "#a21caf", "#9d174d"] },
+  dark: { text: "#fdf0f7", shine: "#f9a8d4", gradient: ["#f9a8d4", "#f0abfc", "#fda4af"] },
 };
 
 // Text with a slow shine sweep. Both colours pass contrast on their own, so it stays readable mid-sweep.

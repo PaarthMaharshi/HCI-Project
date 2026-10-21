@@ -199,3 +199,6 @@ export const SECTIONS = [
   { id: "writing", label: "Writing", key: "6" },
   { id: "social", label: "Social", key: "7" },
 ];
+
+// Facilitator-only view at #lab; reached with the 8 key or the footer link, not the section nav.
+export const LAB = { id: "lab", label: "Usability Lab", key: "8" };

@@ -1,0 +1,131 @@
+/* Pink theme. Loaded last: re-points the palette tokens to pinks and plums,
+   and styles the floating orbs, rings and sparkles.
+   The structure and motion (blobs, parallax, ink flood) come from tech.css. */
+
+:root,
+:root[data-theme="light"] {
+  --bg: #fff0f6;
+  --surface: #ffffff;
+  --surface-2: #fde4ef;
+  --text: #3b1530;
+  --text-muted: #7a4a68;
+  --border: #f5cfe0;
+  --border-strong: #b07a98;
+  --shadow: 0 1px 2px rgb(90 20 60 / 0.06), 0 10px 30px -12px rgb(90 20 60 / 0.2);
+  --mark-bg: #fbcfe8;
+  --mark-text: #3b1530;
+  --header-bg: rgb(255 240 246 / 0.86);
+  --side-bg: #fde8f1;
+  --hero-panel: rgb(255 255 255 / 0.72);
+  --c-overview: #be185d;
+
+  --blob: #4a1942;
+  --blob-grid: rgb(255 240 246 / 0.08);
+  --blob-star: #fff0f6;
+  --ink-bg: #4a1942;
+  --robot-hot: #f472b6;
+  --dot-grid: rgb(190 24 93 / 0.14);
+  --ring-line: #fbcfe8; /* rings inside the blobs */
+}
+:root[data-theme="dark"] {
+  --bg: #1c0f1a;
+  --surface: #29172a;
+  --surface-2: #331d33;
+  --text: #fdf0f7;
+  --text-muted: #dcbfd2;
+  --border: #4a2c47;
+  --border-strong: #a07a95;
+  --header-bg: rgb(28 15 26 / 0.86);
+  --side-bg: #221320;
+  --hero-panel: rgb(41 23 42 / 0.8);
+  --c-overview: #f9a8d4;
+
+  --blob: #3d1638;
+  --blob-stroke: rgb(249 168 212 / 0.25);
+  --blob-grid: rgb(249 168 212 / 0.07);
+  --ink-bg: #3d1638;
+  --dot-grid: rgb(249 168 212 / 0.1);
+  --ring-line: #f9a8d4;
+}
+
+/* Soft pink glow behind the hero. */
+.hero::before {
+  content: "";
+  position: absolute; inset: 0; z-index: -1;
+  background:
+    radial-gradient(40rem 26rem at 72% 45%, color-mix(in srgb, #f9a8d4 40%, transparent), transparent 70%),
+    radial-gradient(30rem 20rem at 15% 80%, color-mix(in srgb, #c4b5fd 25%, transparent), transparent 70%);
+  pointer-events: none;
+}
+
+.brand-mark,
+.now-avatar {
+  background: linear-gradient(135deg, #db2777, #a21caf);
+  box-shadow: 0 6px 16px -6px rgb(162 28 175 / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.25);
+}
+
+/* ---------- Inside the blobs ---------- */
+.blob-ring { fill: none; stroke: var(--ring-line); stroke-width: 0.6; opacity: 0.5; animation: twinkle 4s ease-in-out infinite; }
+.blob-sparkle { fill: var(--blob-star); animation: twinkle 2.6s ease-in-out infinite; }
+
+/* ---------- Now card on the right of the hero ---------- */
+/* A near-opaque panel so its text keeps full contrast over the blobs. */
+.hero .now-card {
+  --hero-panel: rgb(255 255 255 / 0.92);
+  position: relative;
+  justify-self: end;
+  width: min(100%, 26rem);
+}
+:root[data-theme="dark"] .hero .now-card { --hero-panel: rgb(41 23 42 / 0.94); }
+
+/* ---------- Floating shapes ---------- */
+.orb { filter: drop-shadow(0 12px 18px rgb(157 23 77 / 0.3)); }
+.ring-line { fill: none; stroke: #f472b6; stroke-width: 3; stroke-dasharray: 2 7; stroke-linecap: round; }
+.ring-dot { fill: #f472b6; }
+.ring-orbit { transform-origin: 50px 50px; animation: spin 9s linear infinite; }
+
+.prop-ring-1 { width: 96px; right: 30%; top: 6%; }
+.prop-orb-1 { width: 54px; left: 3%; top: 32%; }
+.prop-orb-2 { width: 40px; right: 5%; bottom: 12%; }
+
+/* ---------- Sparkles ---------- */
+.sparkle path { fill: #f472b6; }
+.sparkle { animation: sparkle-pop 2.4s ease-in-out infinite; transform-origin: center; }
+@keyframes sparkle-pop { 0%, 100% { transform: scale(0.6) rotate(0); opacity: 0.5; } 50% { transform: scale(1.1) rotate(45deg); opacity: 1; } }
+.prop-spark-1 { width: 34px; left: 47%; top: 12%; }
+.prop-spark-2 { width: 24px; right: 33%; bottom: 14%; }
+.prop-spark-2 .sparkle { animation-delay: 0.8s; }
+.prop-spark-3 { width: 28px; right: 3%; top: 55%; }
+.prop-spark-3 .sparkle { animation-delay: 1.5s; }
+
+/* ---------- Ink band: plum instead of brown ---------- */
+.ink-zone .about-grid { grid-template-areas: "skills timeline"; }
+:root[data-theme="light"] .ink-content,
+:root:not([data-theme]) .ink-content {
+  --bg: #4a1942;
+  --surface: #58204f;
+  --surface-2: #64285b;
+  --text: #fdf0f7;
+  --text-muted: #e6c8da;
+  --border: #7a3d6f;
+  --border-strong: #b07a98;
+  --hero-panel: rgb(88 32 79 / 0.85);
+  --c-overview: #f9a8d4;
+}
+:root[data-theme="dark"] .ink-content {
+  --surface: #4a1d45;
+  --surface-2: #55244f;
+  --border: #6b3563;
+  --hero-panel: rgb(74 29 69 / 0.85);
+}
+
+@media (max-width: 62rem) {
+  .hero .now-card { justify-self: stretch; width: 100%; }
+  .ink-zone .about-grid { grid-template-areas: "skills" "timeline"; }
+  /* The stats wrap to full width here, so keep the bottom blobs out from under them. */
+  .blob-c, .blob-d, .prop-orb-1, .prop-orb-2 { display: none; }
+  .prop-ring-1 { width: 64px; right: 4%; top: 3%; }
+}
+@media (forced-colors: active) {
+  .hero::before { display: none; }
+}

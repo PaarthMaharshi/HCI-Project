@@ -1,5 +1,6 @@
 import { SECTIONS } from "../data/profile.js";
 import { useReducedMotion } from "../hooks/useReducedMotion.js";
+import { Annotation } from "./Annotation.jsx";
 import { BlurHeading } from "./Motion.jsx";
 import ScrollVelocity from "./reactbits/ScrollVelocity/ScrollVelocity.jsx";
 
@@ -35,6 +36,7 @@ export function SectionBand({ id, title, band = title, children }) {
           <BlurHeading as="h2" id={`${id}-h`} text={title} className="section-h" />
         </div>
         {children && <p className="section-sub">{children}</p>}
+        {index === 0 || index === 1 ? <Annotation id="band" /> : null}
       </div>
     </div>
   );

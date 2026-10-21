@@ -1,19 +1,19 @@
 import { profile } from "../data/profile.js";
+import { Annotation } from "../components/Annotation.jsx";
 import { CopyButton } from "../components/CopyButton.jsx";
 import { PinIcon } from "../components/Icons.jsx";
 import { BlurHeading, Count, Gradient, Reveal, Shiny } from "../components/Motion.jsx";
 import SpotlightCard from "../components/reactbits/SpotlightCard/SpotlightCard.jsx";
 import { HeroScene, useParallax } from "../components/tech/HeroScene.jsx";
 import { InkFlood } from "../components/tech/InkFlood.jsx";
-import { Robot } from "../components/tech/Robot.jsx";
+import { usePrefs } from "../hooks/usePrefs.js";
 import { formatMonth } from "../lib/format.js";
 import { useRef } from "react";
 import { useView } from "../view.js";
 
 // Side card: what Paarth is doing right now, built from the profile data.
-// It sits inside the ink band, which always uses the dark palette.
 function NowCard() {
-  const theme = "dark";
+  const { theme } = usePrefs();
   const b = profile.basics;
   const latest = profile.experience[0];
   return (
@@ -22,8 +22,8 @@ function NowCard() {
       spotlightColor="var(--accent)"
       intensity={0.5}
       borderGlow={0.8}
-      className="now-card"
-      style={{ "--spotlight-card-surface": "var(--hero-panel)", "--spotlight-card-border": "var(--border)", "--spotlight-card-shadow": "var(--shadow)" }}
+      className="now-card fade-up"
+      style={{ "--d": "0.5s", "--spotlight-card-surface": "var(--hero-panel)", "--spotlight-card-border": "var(--border)", "--spotlight-card-shadow": "var(--shadow)" }}
     >
       <div className="now-id">
         <span className="now-avatar" aria-hidden="true">{b.initials}</span>
@@ -34,7 +34,7 @@ function NowCard() {
       </div>
       <p className="now-status">
         <span className="status-dot" aria-hidden="true" />
-        <Shiny tone="dark">{b.availability}</Shiny>
+        <Shiny>{b.availability}</Shiny>
       </p>
       <dl className="now-list">
         <div>
@@ -50,6 +50,7 @@ function NowCard() {
           </dd>
         </div>
       </dl>
+      <Annotation id="now" block />
     </SpotlightCard>
   );
 }
@@ -64,6 +65,7 @@ function Hero() {
       <HeroScene />
       <div className="container hero-inner">
         <div className="hero-copy">
+          <Annotation id="hero" block />
           <p className="hero-hello">
             <Gradient>Hi, I’m</Gradient>
           </p>
@@ -84,14 +86,14 @@ function Hero() {
               See projects <span aria-hidden="true" className="arrow">↓</span>
             </a>
           </div>
+          <Annotation id="copy" block />
         </div>
-        <div className="par hero-robot" style={{ "--depth": 12 }}>
-          <Robot />
-        </div>
+        <NowCard />
       </div>
 
       <div className="container">
         <h2 className="visually-hidden">Quick facts</h2>
+        <Annotation id="heroScene" block />
         <ul className="stats">
           {profile.stats.map((s) => (
             <li key={s.caption}>
@@ -109,15 +111,15 @@ function About() {
   const { reveal } = useView();
   return (
     <InkFlood>
+      <div className="container">
+        <Annotation id="inkBand" block />
+      </div>
       <div className="container about-grid">
-        <Reveal className="about-now">
-          <NowCard />
-        </Reveal>
-
         <Reveal className="about-skills">
           <section aria-labelledby="skills-h" className="about-col panel">
             <p className="mini-label">What I work with</p>
             <h2 id="skills-h" className="about-title">Skills</h2>
+            <Annotation id="skills" block />
             <dl className="skills">
               {profile.skills.map((s) => (
                 <div className="skill-row" key={s.id} id={`item-${s.id}`} data-item="" tabIndex={-1}>
@@ -139,6 +141,7 @@ function About() {
           <section aria-labelledby="timeline-h" className="about-col panel">
             <p className="mini-label">Recently</p>
             <h2 id="timeline-h" className="about-title">Timeline</h2>
+            <Annotation id="timeline" block />
             <ol className="timeline">
               {profile.timeline.map((t) => (
                 <li key={t.date + t.text}>

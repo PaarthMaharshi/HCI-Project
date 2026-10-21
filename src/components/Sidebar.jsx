@@ -1,15 +1,16 @@
 import { forwardRef, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { SECTIONS, profile } from "../data/profile.js";
-import { DESKTOP, useMediaQuery } from "../hooks/useMediaQuery.js";
+import { DESKTOP, DESKTOP_LARGE_TEXT, useMediaQuery } from "../hooks/useMediaQuery.js";
 import { usePrefs } from "../hooks/usePrefs.js";
 import { useReducedMotion } from "../hooks/useReducedMotion.js";
 import { useScrollProgress } from "../hooks/useScrollProgress.js";
 import { KeyboardIcon, MailIcon, MoonIcon, SunIcon } from "./Icons.jsx";
 import Magnet from "./reactbits/Magnet/Magnet.jsx";
 import StarBorder from "./reactbits/StarBorder/StarBorder.jsx";
+import { Annotation } from "./Annotation.jsx";
 import { SearchBox } from "./SearchBox.jsx";
 
-function ThemeButton({ withLabel = false }) {
+export function ThemeButton({ withLabel = false }) {
   const p = usePrefs();
   const next = p.theme === "dark" ? "Light" : "Dark";
   return (
@@ -24,6 +25,50 @@ function ThemeButton({ withLabel = false }) {
       <span className="theme-swap" key={p.theme}>{p.theme === "dark" ? <SunIcon /> : <MoonIcon />}</span>
       {withLabel && <span aria-hidden="true">{next} theme</span>}
     </button>
+  );
+}
+
+// Larger text (WCAG 1.4.4): scales the whole page to 125%.
+export function TextSizeButton({ withLabel = false }) {
+  const p = usePrefs();
+  const label = p.largeText ? "Normal text" : "Larger text";
+  return (
+    <button
+      id="ctl-text-size"
+      type="button"
+      className={`icon-btn text-size-btn${withLabel ? " has-label" : ""}`}
+      data-tip={label}
+      aria-pressed={p.largeText}
+      aria-label="Larger text"
+      onClick={p.toggleLargeText}
+    >
+      <span className="text-size-glyph" aria-hidden="true">A<small>+</small></span>
+      {withLabel && <span aria-hidden="true">{label}</span>}
+    </button>
+  );
+}
+
+// "Show HCI annotations": labels parts of the UI with the principle they apply.
+export function AnnotationsButton({ className = "icon-btn has-label" }) {
+  const p = usePrefs();
+  return (
+    <button id="ctl-annotations" type="button" className={className} aria-pressed={p.annotations} onClick={p.toggleAnnotations}>
+      <span className="hci-glyph" aria-hidden="true">HCI</span> {p.annotations ? "Hide" : "Show"} HCI notes
+    </button>
+  );
+}
+
+// Annotation labels for the bar, shown under it while HCI notes are on.
+function NavNotes() {
+  const { annotations } = usePrefs();
+  if (!annotations) return null;
+  return (
+    <div className="nav-notes">
+      <Annotation id="nav" />
+      <Annotation id="search" />
+      <Annotation id="textSize" />
+      <Annotation id="theme" />
+    </div>
   );
 }
 
@@ -46,7 +91,7 @@ function ContactCta({ onNav, className = "" }) {
       as="a"
       href="#overview"
       className={`nav-cta ${className}`}
-      color={theme === "dark" ? "#fdba74" : "#c2410c"}
+      color={theme === "dark" ? "#f9a8d4" : "#be185d"}
       speed="5s"
       onClick={(e) => { e.preventDefault(); onNav("overview", { target: "ctl-copy-email" }); }}
     >
@@ -181,9 +226,11 @@ function MobileBar({ index, onSelect, active, onNav, onHelp, searchRef }) {
           </button>
           <Brand onNav={onNav} />
           <SearchBox ref={searchRef} index={index} onSelect={onSelect} placeholder="Search…" />
+          <TextSizeButton />
           <ThemeButton />
           <ScrollBar />
         </div>
+        <NavNotes />
       </header>
       <dialog ref={dialogRef} className="drawer" aria-label="Menu" onClose={() => setOpen(false)} onClick={(e) => { if (e.target === dialogRef.current) setOpen(false); }}>
         <div className="drawer-inner">
@@ -203,6 +250,7 @@ function MobileBar({ index, onSelect, active, onNav, onHelp, searchRef }) {
               <button type="button" className="icon-btn has-label" onClick={() => { setOpen(false); onHelp(); }}>
                 <KeyboardIcon /> Shortcuts
               </button>
+              <AnnotationsButton className="icon-btn has-label drawer-wide" />
             </div>
           </div>
         </div>
@@ -212,7 +260,8 @@ function MobileBar({ index, onSelect, active, onNav, onHelp, searchRef }) {
 }
 
 export const Sidebar = forwardRef(function Sidebar({ index, onSelect, active, onNav, onHelp }, searchRef) {
-  const desktop = useMediaQuery(DESKTOP);
+  const { largeText } = usePrefs();
+  const desktop = useMediaQuery(largeText ? DESKTOP_LARGE_TEXT : DESKTOP);
   const scrolled = useScrolled();
   const reduce = useReducedMotion();
   if (!desktop) return <MobileBar index={index} onSelect={onSelect} active={active} onNav={onNav} onHelp={onHelp} searchRef={searchRef} />;
@@ -228,11 +277,15 @@ export const Sidebar = forwardRef(function Sidebar({ index, onSelect, active, on
           <SearchBox ref={searchRef} index={index} onSelect={onSelect} placeholder="Search" />
         </div>
         <Magnet padding={24} magnetStrength={4} disabled={reduce}>
+          <TextSizeButton />
+        </Magnet>
+        <Magnet padding={24} magnetStrength={4} disabled={reduce}>
           <ThemeButton />
         </Magnet>
         <ContactCta onNav={onNav} />
         <ScrollBar />
       </div>
+      <NavNotes />
     </header>
   );
 });
